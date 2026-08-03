@@ -9,7 +9,7 @@ class LoginController extends Controller
 {
     public function showForm()
     {
-        return view('common.login_page');
+        return view('common.login_page', ['role' => 'hospital']);
     }
 
     public function login(Request $request)

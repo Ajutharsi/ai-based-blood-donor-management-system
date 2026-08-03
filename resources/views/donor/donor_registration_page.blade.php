@@ -184,7 +184,7 @@
   </div>
 
   <!-- FORM -->
-  <form method="POST" action="{{ route('donor.register') }}">
+  <form method="POST" action="{{ route('donor.register') }}" enctype="multipart/form-data">
     @csrf
     <div class="form-area">
 
@@ -275,6 +275,16 @@
             <label>Confirm Password <span class="req">*</span></label>
             <input type="password" name="password_confirmation"
                    placeholder="Repeat password">
+          </div>
+        </div>
+
+        <div class="form-row full">
+          <div class="field">
+            <label>Profile Photo</label>
+            <input type="file" name="profile_image" accept="image/png,image/jpeg,image/webp"
+                   class="{{ $errors->has('profile_image') ? 'is-invalid' : '' }}">
+            <span class="helper">Optional. JPG, PNG or WEBP, max 2MB.</span>
+            @error('profile_image')<span class="error-msg">{{ $message }}</span>@enderror
           </div>
         </div>
 

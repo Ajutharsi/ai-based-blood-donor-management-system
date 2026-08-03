@@ -139,7 +139,7 @@
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
       <span class="sb-tooltip">Donors</span>
     </a>
-    <a href="#" class="sb-item">
+    <a href="{{ route('admin.hospitals.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
       <span class="sb-tooltip">Hospitals</span>
     </a>
@@ -210,7 +210,11 @@
               <div class="pc-circle pcc1"></div>
               <div class="pc-circle pcc2"></div>
             </div>
-            <div class="pc-avatar">{{ $initials }}</div>
+            <div class="pc-avatar" @if($donor->profile_image) style="background-image:url('{{ \Illuminate\Support\Facades\Storage::url($donor->profile_image) }}');background-size:cover;background-position:center;" @endif>
+              @unless($donor->profile_image)
+                {{ $initials }}
+              @endunless
+            </div>
             <div class="pc-name">{{ $donor->full_name }}</div>
             <div class="pc-email">{{ $donor->email }}</div>
             <span class="pc-blood">{{ $donor->blood_group ?? 'N/A' }}</span>
@@ -339,7 +343,7 @@
           <div class="card-hd">
             <div>
               <div class="card-t">AI Prediction Breakdown</div>
-              <div class="card-s">Logistic Regression model analysis</div>
+              <div class="card-s">{{ $modelMetrics['model'] ?? 'AI' }} model analysis</div>
             </div>
             <span class="badge {{ $donor->is_eligible ? 'b-elig' : 'b-not' }}">
               {{ $donor->is_eligible ? 'Eligible' : 'Not Eligible' }}
@@ -394,7 +398,7 @@
               </div>
             </div>
            <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;">
-  Model: Logistic Regression ·
+  Model: {{ $modelMetrics['model'] ?? 'unavailable' }} ·
   Last AI check:
   @if($donor->last_ai_check)
     {{ \Carbon\Carbon::parse($donor->last_ai_check)->format('d M Y, h:i A') }}
@@ -456,6 +460,45 @@
           <div class="notes-box {{ !$donor->medical_notes ? 'empty' : '' }}">
             {{ $donor->medical_notes ?? 'No additional health notes provided.' }}
           </div>
+        </div>
+
+        {{-- DONATION HISTORY --}}
+        <div class="card">
+          <div class="card-hd">
+            <div>
+              <div class="card-t">Donation History</div>
+              <div class="card-s">{{ $donor->donations->count() }} recorded donation{{ $donor->donations->count() !== 1 ? 's' : '' }}</div>
+            </div>
+          </div>
+
+          @if($donor->donations->count() > 0)
+            <div class="info-grid" style="grid-template-columns:1fr;gap:0;">
+              @foreach($donor->donations as $d)
+                <div class="pc-row">
+                  <span class="pc-key">{{ $d->donation_date->format('d M Y') }}</span>
+                  <span class="pc-val">{{ $d->blood_group ?? '—' }} · {{ $d->donation_center ?? '—' }} · {{ $d->units }} unit{{ $d->units !== 1 ? 's' : '' }}</span>
+                </div>
+              @endforeach
+            </div>
+          @else
+            <div class="notes-box empty">No donations recorded yet.</div>
+          @endif
+
+          <form method="POST" action="{{ route('admin.donors.donations.store', $donor->id) }}" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;">
+            @csrf
+            <div class="field">
+              <label style="font-size:0.72rem;color:var(--muted);">Donation Date</label>
+              <input type="date" name="donation_date" max="{{ now()->format('Y-m-d') }}" required
+                     style="width:100%;padding:0.5rem 0.7rem;border:1px solid var(--gray-b);border-radius:7px;font-size:0.82rem;">
+            </div>
+            <div class="field">
+              <label style="font-size:0.72rem;color:var(--muted);">Units</label>
+              <input type="number" name="units" value="1" min="1" max="5"
+                     style="width:100%;padding:0.5rem 0.7rem;border:1px solid var(--gray-b);border-radius:7px;font-size:0.82rem;">
+            </div>
+            <button type="submit" class="action-btn ab-toggle-on" style="white-space:nowrap;">Record Donation</button>
+          </form>
+          @error('donation_date')<span class="error-msg" style="color:var(--red);font-size:0.72rem;">{{ $message }}</span>@enderror
         </div>
 
       </div>

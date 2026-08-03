@@ -12,8 +12,8 @@ class AdminSeeder extends Seeder
     {
         Admin::create([
             'name'     => 'LifeLink Admin',
-            'email'    => 'admin@lifelink.lk',
-            'password' => Hash::make('admin123456'),
+            'email'    => 'admin@gmail.com',
+            'password' => Hash::make('password123'),
             'role'     => 'superadmin',
         ]);
     }

@@ -12,8 +12,8 @@ class HospitalSeeder extends Seeder
     {
         Hospital::create([
             'name'            => 'Colombo National Hospital',
-            'email'           => 'colombo@hospital.lk',
-            'password'        => Hash::make('hospital123'),
+            'email'           => 'hospital@gmail.com',
+            'password'        => Hash::make('password123'),
             'registration_id' => 'HOS-2024-0001',
             'phone'           => '+94 11 269 1111',
             'city'            => 'Colombo',

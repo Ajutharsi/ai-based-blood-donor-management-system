@@ -243,7 +243,7 @@
   </div>
   <div class="nav-links">
     <a href="#">Home</a>
-    <a href="{{route('Find')}}">Find Donors</a>
+    <a href="{{route('find-donors')}}">Find Donors</a>
     <a href="">Hospitals</a>
      <a href="{{ route('about') }}">About</a>
       <a href="{{ route('contact') }}">Contact</a>
@@ -262,7 +262,13 @@
       AI-Powered Donor Matching
     </div>
     <h1>Saving Lives with <span>Smarter</span> Blood Donation</h1>
-    <p>An intelligent platform that connects hospitals with eligible blood donors instantly — powered by machine learning that predicts donor suitability with 95% accuracy.</p>
+    <p>An intelligent platform that connects hospitals with eligible blood donors instantly — powered by machine learning that predicts donor suitability with
+      @if(!empty($modelMetrics['accuracy']))
+        {{ number_format($modelMetrics['accuracy'], 2) }}%
+      @else
+        high
+      @endif
+      accuracy.</p>
     <div class="hero-actions">
     
 <a class="btn-hero btn-hero-primary" href="{{ route('donor.register')}}">Donate Blood Today</a>
@@ -307,7 +313,12 @@
           <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
         </div>
         <div class="ai-text">
-          <strong>Logistic Regression · 95% accuracy</strong>
+          <strong>
+            {{ $modelMetrics['model'] ?? 'AI model' }}
+            @if(!empty($modelMetrics['accuracy']))
+              · {{ number_format($modelMetrics['accuracy'], 2) }}% accuracy
+            @endif
+          </strong>
           Prediction based on age, weight & hemoglobin
         </div>
       </div>
@@ -318,15 +329,15 @@
 <!-- STATS -->
 <div class="stats">
   <div class="stat-item">
-    <div class="stat-num">2,195</div>
+    <div class="stat-num">{{ number_format($donorCount ?? 0) }}</div>
     <div class="stat-label">Registered Donors</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num">95%</div>
+    <div class="stat-num">{{ !empty($modelMetrics['accuracy']) ? number_format($modelMetrics['accuracy'], 1) . '%' : '—' }}</div>
     <div class="stat-label">AI Prediction Accuracy</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num">40+</div>
+    <div class="stat-num">{{ $hospitalCount ?? 0 }}</div>
     <div class="stat-label">Partner Hospitals</div>
   </div>
   <div class="stat-item">
@@ -351,7 +362,7 @@
       <div class="step-num">2</div>
       <div class="step-line"></div>
       <div class="step-title">AI assesses eligibility</div>
-      <div class="step-desc">Our Logistic Regression model instantly predicts if you're eligible to donate.</div>
+      <div class="step-desc">Our {{ $modelMetrics['model'] ?? 'AI' }} model instantly predicts if you're eligible to donate.</div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
@@ -378,8 +389,12 @@
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       </div>
       <div class="feature-title">AI Eligibility Prediction</div>
-      <div class="feature-desc">Machine learning models trained on real donor data predict eligibility based on hemoglobin, weight, and age with 95% accuracy.</div>
-      <span class="feature-tag">Logistic Regression + k-NN</span>
+      <div class="feature-desc">Machine learning models trained on real donor data predict eligibility based on hemoglobin, weight, and age
+        @if(!empty($modelMetrics['accuracy']))
+          with {{ number_format($modelMetrics['accuracy'], 1) }}% accuracy
+        @endif
+      .</div>
+      <span class="feature-tag">{{ $modelMetrics['model'] ?? 'Logistic Regression / k-NN' }}</span>
     </div>
     <div class="feature-card">
       <div class="feature-icon">

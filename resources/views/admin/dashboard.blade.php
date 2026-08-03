@@ -149,7 +149,7 @@
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
       <span class="sb-tooltip">Donors</span>
     </a>
-    <a href="#" class="sb-item">
+    <a href="{{ route('admin.hospitals.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
       <span class="sb-tooltip">Hospitals</span>
     </a>
@@ -215,7 +215,7 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
     <div>
       <div style="font-size:0.8rem;font-weight:500;color:var(--blue);">AI Eligibility Scheduler</div>
-      <div style="font-size:0.72rem;color:#1E40AF;">Runs daily at midnight · Re-checks all donors using Logistic Regression</div>
+      <div style="font-size:0.72rem;color:#1E40AF;">Runs daily at midnight · Re-checks all donors using {{ $modelMetrics['model'] ?? 'the current eligibility model' }}</div>
     </div>
   </div>
   <div style="text-align:right;">
@@ -336,7 +336,11 @@
         $border = $level === 'high'   ? '#FECACA'      : ($level === 'medium' ? '#FDE68A'      : '#BBF7D0');
         $color  = $level === 'high'   ? '#991B1B'      : ($level === 'medium' ? '#92400E'      : '#166534');
         $label  = $level === 'high'   ? '↑ HIGH'       : ($level === 'medium' ? '→ MEDIUM'     : '↓ LOW');
-        $trend  = $forecast['trend']  === 'increasing' ? '↑ Rising'  : '↓ Falling';
+        $trend  = match($forecast['trend']) {
+            'increasing' => '↑ Rising',
+            'decreasing' => '↓ Falling',
+            default      => '→ Stable',
+        };
       @endphp
       <div style="background:{{ $bg_col }};border:1px solid {{ $border }};border-radius:12px;padding:1rem;">
 
@@ -360,13 +364,15 @@
 
         {{-- MINI HISTORY BARS --}}
         <div style="display:flex;align-items:flex-end;gap:3px;height:24px;margin-bottom:0.5rem;">
+          @php $historyWeeks = max(count($forecast['week_history']), 1); @endphp
           @foreach($forecast['week_history'] as $w => $count)
             @php
-              $maxH = max(array_merge($forecast['week_history'], [1]));
-              $h    = $maxH > 0 ? round(($count / $maxH) * 24) : 2;
-              $h    = max($h, 2);
+              $maxH    = max(array_merge($forecast['week_history'], [1]));
+              $h       = $maxH > 0 ? round(($count / $maxH) * 24) : 2;
+              $h       = max($h, 2);
+              $opacity = $historyWeeks > 1 ? 0.4 + ($w * (0.6 / ($historyWeeks - 1))) : 1.0;
             @endphp
-            <div style="flex:1;background:{{ $color }};opacity:{{ 0.4 + ($w * 0.15) }};border-radius:2px;height:{{ $h }}px;"></div>
+            <div style="flex:1;background:{{ $color }};opacity:{{ $opacity }};border-radius:2px;height:{{ $h }}px;"></div>
           @endforeach
           {{-- Predicted bar --}}
           @php
@@ -378,14 +384,28 @@
         </div>
 
         <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:{{ $color }};opacity:0.7;">
-          <span>4w ago</span>
+          <span>{{ $historyWeeks }}w ago</span>
           <span>Next ↑</span>
         </div>
 
         {{-- TREND --}}
         <div style="margin-top:0.5rem;font-size:0.7rem;color:{{ $color }};font-weight:500;">
-          {{ $trend }} · Linear Regression
+          {{ $trend }} · {{ $forecast['model'] ?? 'unknown' }}
         </div>
+
+        {{-- DISTRICT BREAKDOWN (real, geographic demand split) --}}
+        @if(!empty($forecast['district_breakdown']))
+          <div style="margin-top:0.6rem;padding-top:0.5rem;border-top:1px dashed {{ $border }};">
+            <div style="font-size:0.62rem;color:{{ $color }};opacity:0.7;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;">Top districts</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">
+              @foreach($forecast['district_breakdown'] as $d)
+                <span style="font-size:0.65rem;padding:2px 7px;border-radius:10px;background:{{ $color }};color:white;opacity:0.85;">
+                  {{ $d['district'] }} ({{ $d['request_count'] }})
+                </span>
+              @endforeach
+            </div>
+          </div>
+        @endif
       </div>
     @endforeach
   </div>
@@ -509,11 +529,27 @@
           <div class="stat-icon si-blue">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
           </div>
-          <span class="stat-trend trend-up">95%</span>
+          @if($modelMetrics)
+            <span class="stat-trend trend-up">{{ $modelMetrics['model'] }}</span>
+          @endif
         </div>
-        <div class="stat-num">94.99<span style="font-size:1rem;font-family:'DM Sans',sans-serif;font-weight:300">%</span></div>
-        <div class="stat-label">AI Accuracy</div>
-        <div class="stat-sub">Logistic Regression model</div>
+        @if($modelMetrics)
+          <div class="stat-num">{{ number_format($modelMetrics['accuracy'], 2) }}<span style="font-size:1rem;font-family:'DM Sans',sans-serif;font-weight:300">%</span></div>
+          <div class="stat-label">AI Accuracy</div>
+          <div class="stat-sub">
+            {{ $modelMetrics['model'] }}
+            @if(!empty($modelMetrics['test_set_rows']))
+              · held-out test on {{ number_format($modelMetrics['test_set_rows']) }} rows
+            @endif
+            @if(!empty($modelMetrics['trained_at']))
+              · evaluated {{ \Carbon\Carbon::parse($modelMetrics['trained_at'])->diffForHumans() }}
+            @endif
+          </div>
+        @else
+          <div class="stat-num" style="color:var(--muted);">—</div>
+          <div class="stat-label">AI Accuracy</div>
+          <div class="stat-sub">Not available — AI service unreachable or not yet evaluated</div>
+        @endif
       </div>
     </div>
 

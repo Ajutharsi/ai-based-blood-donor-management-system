@@ -152,7 +152,13 @@
   <div class="hero-content">
     <div class="hero-tag"><span></span> AI-Matched Donors</div>
     <h1>Find an <em>eligible</em> donor near you</h1>
-    <p>Search our database of verified, AI-screened donors by blood group and district. All donors shown are currently eligible based on our 94.99% accurate model.</p>
+    <p>Search our database of verified, AI-screened donors by blood group and district. All donors shown are currently eligible based on our
+      @if(!empty($modelMetrics['accuracy']))
+        {{ number_format($modelMetrics['accuracy'], 2) }}% accurate {{ $modelMetrics['model'] }}
+      @else
+        AI eligibility
+      @endif
+      model.</p>
   </div>
 </div>
 

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\BloodRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Donor;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -23,6 +25,7 @@ class DashboardController extends Controller
         $bloodGroups    = ['O+','A+','B+','AB+','O-','A-','B-','AB-'];
         $shortageAlerts = [];
         $aiUsed         = false;
+        $aiAvailable    = true; // short-circuit further AI calls this request once it's confirmed unreachable
 
         foreach ($bloodGroups as $bg) {
             $eligible   = Donor::where('blood_group', $bg)->where('is_eligible', true)->count();
@@ -31,33 +34,43 @@ class DashboardController extends Controller
                             ->whereMonth('created_at', now()->month)
                             ->count();
 
-            // Call Python KNN model
-            try {
-                $response = Http::timeout(5)->post(
-                    config('services.ai.url', 'http://127.0.0.1:8001') . '/predict-shortage',
-                    [
-                        'blood_group'         => $bg,
-                        'eligible_count'      => $eligible,
-                        'total_donors'        => $total,
-                        'requests_last_month' => $reqsMonth,
-                    ]
-                );
+            if (!$aiAvailable) {
+                $level = $this->fallbackLevel($eligible);
+                $conf  = 0;
+            } else {
+                // Call Python KNN model
+                try {
+                    $response = Http::timeout(5)->post(
+                        config('services.ai.url', 'http://127.0.0.1:8001') . '/predict-shortage',
+                        [
+                            'blood_group'         => $bg,
+                            'eligible_count'      => $eligible,
+                            'total_donors'        => $total,
+                            'requests_last_month' => $reqsMonth,
+                        ]
+                    );
 
-                if ($response->successful()) {
-                    $result = $response->json();
-                    $level  = $result['level']      ?? 'sufficient';
-                    $conf   = $result['confidence'] ?? 0;
-                    $aiUsed = true;
-                } else {
-                    // Fallback
+                    if ($response->successful()) {
+                        $result = $response->json();
+                        $level  = $result['level']      ?? 'sufficient';
+                        $conf   = $result['confidence'] ?? 0;
+                        $aiUsed = true;
+                    } else {
+                        // Fallback
+                        $level = $this->fallbackLevel($eligible);
+                        $conf  = 0;
+                    }
+
+                } catch (ConnectionException $e) {
+                    Log::warning('Shortage AI unavailable: ' . $e->getMessage());
+                    $aiAvailable = false;
+                    $level = $this->fallbackLevel($eligible);
+                    $conf  = 0;
+                } catch (\Exception $e) {
+                    Log::warning('Shortage AI unavailable: ' . $e->getMessage());
                     $level = $this->fallbackLevel($eligible);
                     $conf  = 0;
                 }
-
-            } catch (\Exception $e) {
-                Log::warning('Shortage AI unavailable: ' . $e->getMessage());
-                $level = $this->fallbackLevel($eligible);
-                $conf  = 0;
             }
 
             // Only add to alerts if not sufficient
@@ -78,35 +91,57 @@ class DashboardController extends Controller
 
 
 
-        $bloodGroups    = ['O+','A+','B+','AB+','O-','A-','B-','AB-'];
+        $bloodGroups     = ['O+','A+','B+','AB+','O-','A-','B-','AB-'];
 $demandForecasts = [];
+$forecastHistoryWeeks = 8; // real history, not a fixed too-small 4-point window
 
 foreach ($bloodGroups as $bg) {
 
-    // Get request counts for last 4 weeks
-    $week1 = BloodRequest::where('blood_group', $bg)
-                ->whereBetween('created_at', [
-                    now()->subWeeks(4)->startOfWeek(),
-                    now()->subWeeks(4)->endOfWeek()
-                ])->count();
+    // Real weekly request counts, oldest first — as many weeks as
+    // forecastHistoryWeeks specifies, not hardcoded to exactly 4.
+    $weeklyCounts = [];
+    for ($w = $forecastHistoryWeeks; $w >= 1; $w--) {
+        $weeklyCounts[] = BloodRequest::where('blood_group', $bg)
+            ->whereBetween('created_at', [
+                now()->subWeeks($w)->startOfWeek(),
+                now()->subWeeks($w)->endOfWeek(),
+            ])->count();
+    }
 
-    $week2 = BloodRequest::where('blood_group', $bg)
-                ->whereBetween('created_at', [
-                    now()->subWeeks(3)->startOfWeek(),
-                    now()->subWeeks(3)->endOfWeek()
-                ])->count();
+    // Real signal: donors currently eligible for this blood group.
+    $eligibleForForecast = Donor::where('blood_group', $bg)->where('is_eligible', true)->count();
 
-    $week3 = BloodRequest::where('blood_group', $bg)
-                ->whereBetween('created_at', [
-                    now()->subWeeks(2)->startOfWeek(),
-                    now()->subWeeks(2)->endOfWeek()
-                ])->count();
+    // Real geographic breakdown: which districts actually submitted requests
+    // for this blood group in the same history window, via the hospitals
+    // that raised them. This is what "separate the requirement
+    // geographically" (proposal 3.3) means here -- rather than exploding the
+    // dashboard into 8 blood groups x every district as separate forecasts,
+    // each blood-group card surfaces its real top districts by demand.
+    $districtBreakdown = BloodRequest::where('blood_requests.blood_group', $bg)
+        ->join('hospitals', 'hospitals.id', '=', 'blood_requests.hospital_id')
+        ->whereNotNull('hospitals.district')
+        ->where('blood_requests.created_at', '>=', now()->subWeeks($forecastHistoryWeeks)->startOfWeek())
+        ->selectRaw('hospitals.district as district, count(*) as request_count')
+        ->groupBy('hospitals.district')
+        ->orderByDesc('request_count')
+        ->limit(3)
+        ->get()
+        ->map(fn ($row) => ['district' => $row->district, 'request_count' => (int) $row->request_count])
+        ->all();
 
-    $week4 = BloodRequest::where('blood_group', $bg)
-                ->whereBetween('created_at', [
-                    now()->subWeeks(1)->startOfWeek(),
-                    now()->subWeeks(1)->endOfWeek()
-                ])->count();
+    if (!$aiAvailable) {
+        $avg = count($weeklyCounts) > 0 ? array_sum($weeklyCounts) / count($weeklyCounts) : 0;
+        $demandForecasts[$bg] = [
+            'blood_group'        => $bg,
+            'predicted_requests' => round($avg),
+            'demand_level'       => $avg > 2 ? 'high' : ($avg > 0 ? 'medium' : 'low'),
+            'trend'              => 'stable',
+            'model'              => 'moving average (AI unavailable)',
+            'week_history'       => $weeklyCounts,
+            'district_breakdown' => $districtBreakdown,
+        ];
+        continue;
+    }
 
     // Call Python AI forecast
     try {
@@ -114,10 +149,8 @@ foreach ($bloodGroups as $bg) {
             config('services.ai.url', 'http://127.0.0.1:8001') . '/forecast-demand',
             [
                 'blood_group'     => $bg,
-                'requests_week1'  => $week1,
-                'requests_week2'  => $week2,
-                'requests_week3'  => $week3,
-                'requests_week4'  => $week4,
+                'weekly_counts'   => $weeklyCounts,
+                'eligible_donors' => $eligibleForForecast,
             ]
         );
 
@@ -128,18 +161,34 @@ foreach ($bloodGroups as $bg) {
                 'predicted_requests' => $result['predicted_requests'] ?? 0,
                 'demand_level'       => $result['demand_level']       ?? 'medium',
                 'trend'              => $result['trend']              ?? 'stable',
-                'week_history'       => [$week1, $week2, $week3, $week4],
+                'model'              => $result['model']              ?? 'unknown',
+                'week_history'       => $weeklyCounts,
+                'district_breakdown' => $districtBreakdown,
             ];
         }
-    } catch (\Exception $e) {
-        // Fallback — simple average
-        $avg = ($week1 + $week2 + $week3 + $week4) / 4;
+    } catch (ConnectionException $e) {
+        $aiAvailable = false;
+        $avg = count($weeklyCounts) > 0 ? array_sum($weeklyCounts) / count($weeklyCounts) : 0;
         $demandForecasts[$bg] = [
             'blood_group'        => $bg,
             'predicted_requests' => round($avg),
             'demand_level'       => $avg > 2 ? 'high' : ($avg > 0 ? 'medium' : 'low'),
             'trend'              => 'stable',
-            'week_history'       => [$week1, $week2, $week3, $week4],
+            'model'              => 'moving average (AI unavailable)',
+            'week_history'       => $weeklyCounts,
+            'district_breakdown' => $districtBreakdown,
+        ];
+    } catch (\Exception $e) {
+        // Fallback — simple average
+        $avg = count($weeklyCounts) > 0 ? array_sum($weeklyCounts) / count($weeklyCounts) : 0;
+        $demandForecasts[$bg] = [
+            'blood_group'        => $bg,
+            'predicted_requests' => round($avg),
+            'demand_level'       => $avg > 2 ? 'high' : ($avg > 0 ? 'medium' : 'low'),
+            'trend'              => 'stable',
+            'model'              => 'moving average (AI unavailable)',
+            'week_history'       => $weeklyCounts,
+            'district_breakdown' => $districtBreakdown,
         ];
     }
 }
@@ -154,7 +203,7 @@ try {
         'total_donations', 'is_eligible'
     )->get()->toArray();
 
-    if (count($allDonors) >= 4) {
+    if ($aiAvailable && count($allDonors) >= 4) {
         $response = Http::timeout(15)->post(
             config('services.ai.url', 'http://127.0.0.1:8001') . '/cluster-donors',
             ['donors' => $allDonors]
@@ -168,13 +217,34 @@ try {
     Log::warning('Cluster AI error: ' . $e->getMessage());
 }
 
+// ── REAL ELIGIBILITY MODEL METRICS (replaces a previously hardcoded
+// "94.99% / Logistic Regression" figure with the actual held-out-test
+// accuracy/precision/recall/F1 for whichever model is currently deployed,
+// as reported by save_model.py's last training run) ──
+$modelMetrics = null;
+
+if ($aiAvailable) {
+    try {
+        $response = Http::timeout(5)->get(
+            config('services.ai.url', 'http://127.0.0.1:8001') . '/model-info'
+        );
+
+        if ($response->successful() && ($response->json('status') === 'success')) {
+            $modelMetrics = $response->json();
+        }
+    } catch (\Exception $e) {
+        Log::warning('Model metrics unavailable: ' . $e->getMessage());
+    }
+}
+
         return view('admin.dashboard', compact(
             'stats',
             'recent_donors',
             'shortageAlerts',
             'aiUsed',
             'demandForecasts',
-            'clusterResult'
+            'clusterResult',
+            'modelMetrics'
         ));
     }
 

@@ -130,7 +130,7 @@
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
       <span class="sb-tooltip">Donors</span>
     </a>
-    <a href="#" class="sb-item">
+    <a href="{{ route('admin.hospitals.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
       <span class="sb-tooltip">Hospitals</span>
     </a>
@@ -212,16 +212,6 @@
           <option value="eligible"    {{ request('status') === 'eligible'    ? 'selected' : '' }}>Eligible</option>
           <option value="not_eligible"{{ request('status') === 'not_eligible'? 'selected' : '' }}>Not Eligible</option>
         </select>
-
-
-        <td>
-  <span class="badge {{ $donor->is_eligible ? 'b-elig' : 'b-not' }}">
-    {{ $donor->is_eligible ? 'Eligible' : 'Not Eligible' }}
-  </span>
-  @if($donor->is_anomaly)
-    <span class="badge" style="background:#FEF2F2;color:#991B1B;margin-left:4px;">⚠ Suspicious</span>
-  @endif
-</td>
 
         <select name="district" class="filter-select">
           <option value="">All Districts</option>

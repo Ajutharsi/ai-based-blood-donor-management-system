@@ -328,7 +328,7 @@ const config = {
     btnText:    'Sign In to Hospital Portal',
     showHospital: false,
     showAdmin:    false,
-    register:   'Not registered? <a href="#">Register your hospital →</a>',
+    register:   'Not registered? <a href="{{ route("hospital.register") }}">Register your hospital →</a>',
   },
   admin: {
     step:       'Admin Portal',
@@ -343,7 +343,7 @@ const config = {
   },
 };
 
-let currentRole = 'donor';
+let currentRole = '{{ $role ?? "donor" }}';
 
 function setRole(role) {
   currentRole = role;
@@ -365,7 +365,6 @@ function setRole(role) {
   document.getElementById('roleBadgeText').textContent = c.badgeText;
 
   // Show/hide extras
-  document.getElementById('hospitalIdField').classList.toggle('show', c.showHospital);
   document.getElementById('adminHint').classList.toggle('show', c.showAdmin);
 
   // Update tabs
@@ -381,8 +380,11 @@ function togglePass() {
   inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 
+// Initialize the form/tabs to match the role of the route that rendered this page
+// (e.g. /admin/login), so the form doesn't silently submit as a donor login.
+setRole(currentRole);
 
-
+// An explicit ?role= query param (e.g. a shared link) can still override.
 const urlRole = new URLSearchParams(window.location.search).get('role');
 if (urlRole && ['donor','hospital','admin'].includes(urlRole)) {
   setRole(urlRole);

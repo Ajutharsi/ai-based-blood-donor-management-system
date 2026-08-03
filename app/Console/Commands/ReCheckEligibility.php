@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\AiPrediction;
 use App\Models\Donor;
 use App\Services\AiEligibilityService;
 use Illuminate\Support\Facades\Log;
@@ -34,14 +35,15 @@ class ReCheckEligibility extends Command
         foreach ($donors as $donor) {
             try {
                 // Call Python AI
-                $result = $ai->predict([
+                $eligibilityInput = [
                     'age'             => $donor->age             ?? 0,
                     'weight_kg'       => $donor->weight_kg       ?? 0,
                     'hemoglobin'      => $donor->hemoglobin      ?? 0,
                     'total_donations' => $donor->total_donations ?? 0,
                     'blood_group'     => $donor->blood_group     ?? 'O+',
                     'gender'          => $donor->gender          ?? 'Male',
-                ]);
+                ];
+                $result = $ai->predict($eligibilityInput);
 
                 $newEligible    = $result['eligible'];
                 $newConfidence  = $result['confidence'];
@@ -52,6 +54,8 @@ class ReCheckEligibility extends Command
                     'is_eligible'   => $newEligible,
                     'ai_confidence' => $newConfidence,
                 ]);
+
+                AiPrediction::log($donor->id, 'eligibility', $eligibilityInput, $result);
 
                 // Track changes
                 if ($oldEligible !== $newEligible) {

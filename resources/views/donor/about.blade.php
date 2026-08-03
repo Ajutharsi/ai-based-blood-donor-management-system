@@ -165,7 +165,7 @@
   </div>
   <div class="nav-links">
      <a href="#">Home</a>
-    <a href="{{route('Find')}}">Find Donors</a>
+    <a href="{{route('find-donors')}}">Find Donors</a>
     <a href="">Hospitals</a>
      <a href="{{ route('about') }}">About</a>
       <a href="{{ route('contact') }}">Contact</a>
@@ -189,19 +189,33 @@
 <section class="mission">
   <div class="section-inner">
     <div class="mission-grid">
+      @php
+        $accuracyWhole = null; $accuracyDecimal = null;
+        if (!empty($modelMetrics['accuracy'])) {
+          $accuracyParts   = explode('.', number_format($modelMetrics['accuracy'], 2));
+          $accuracyWhole   = $accuracyParts[0];
+          $accuracyDecimal = $accuracyParts[1] ?? '00';
+        }
+      @endphp
       <div class="mission-visual">
         <div class="mv-cards">
           <div class="mv-card">
-            <div class="mv-big-num"><span>94</span>.99%</div>
-            <div class="mv-label">AI model accuracy using Logistic Regression on 2,195 real donor records — our core prediction engine.</div>
+            <div class="mv-big-num">
+              @if($accuracyWhole !== null)
+                <span>{{ $accuracyWhole }}</span>.{{ $accuracyDecimal }}%
+              @else
+                <span>—</span>
+              @endif
+            </div>
+            <div class="mv-label">AI model accuracy using {{ $modelMetrics['model'] ?? 'our current model' }} on {{ number_format($modelMetrics['trained_on_rows'] ?? 0) }} real donor records — our core prediction engine.</div>
           </div>
           <div class="mv-stat">
             <div class="mv-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
-            <div><div class="mv-stat-val">2,195+</div><div class="mv-stat-lbl">Donor records trained on</div></div>
+            <div><div class="mv-stat-val">{{ number_format($modelMetrics['trained_on_rows'] ?? 0) }}</div><div class="mv-stat-lbl">Donor records trained on</div></div>
           </div>
           <div class="mv-stat">
             <div class="mv-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-            <div><div class="mv-stat-val">40+</div><div class="mv-stat-lbl">Partner hospitals across Sri Lanka</div></div>
+            <div><div class="mv-stat-val">{{ $hospitalCount ?? 0 }}</div><div class="mv-stat-lbl">Partner hospitals across Sri Lanka</div></div>
           </div>
         </div>
       </div>
@@ -209,7 +223,13 @@
         <div class="section-tag">Our Mission</div>
         <h2 class="section-title">Making every drop count</h2>
         <p>Blood shortages cost lives — not because donors don't exist, but because connecting the right donor to the right hospital at the right time has always been a manual, slow process.</p>
-        <p>LifeLink changes that. Our AI analyses six key health indicators in real time and predicts donor eligibility with 94.99% accuracy — so hospitals get matched to eligible donors in seconds, not hours.</p>
+        <p>LifeLink changes that. Our AI analyses key health indicators in real time and predicts donor eligibility with
+          @if($accuracyWhole !== null)
+            {{ $accuracyWhole }}.{{ $accuracyDecimal }}%
+          @else
+            high
+          @endif
+          accuracy — so hospitals get matched to eligible donors in seconds, not hours.</p>
         <p>Built as a final-year research project at the University of Sri Lanka, LifeLink combines machine learning, modern web technology, and a passion for public health into one unified platform.</p>
       </div>
     </div>
@@ -276,7 +296,7 @@
       <div class="tech-card">
         <div class="tech-icon">🤖</div>
         <div class="tech-name">scikit-learn</div>
-        <div class="tech-desc">Logistic Regression + k-NN models</div>
+        <div class="tech-desc">{{ $modelMetrics['model'] ?? 'Logistic Regression / k-NN' }} — evaluated head-to-head</div>
       </div>
       <div class="tech-card">
         <div class="tech-icon">🗄️</div>
@@ -321,13 +341,13 @@
           <div class="tl-dot"></div>
           <div class="tl-year">Phase 1</div>
           <div class="tl-title">Research & Dataset Collection</div>
-          <div class="tl-text">Collected and cleaned 2,195 donor records. Analysed eligibility criteria from the National Blood Transfusion Service of Sri Lanka.</div>
+          <div class="tl-text">Collected and cleaned 10,000 donor records. Analysed eligibility criteria from the National Blood Transfusion Service of Sri Lanka.</div>
         </div>
         <div class="tl-item">
           <div class="tl-dot"></div>
           <div class="tl-year">Phase 2</div>
           <div class="tl-title">Model Training & Evaluation</div>
-          <div class="tl-text">Trained Logistic Regression (94.99%) and k-NN (94.08%) classifiers. Evaluated on 30% holdout test set with precision, recall, and F1 scoring.</div>
+          <div class="tl-text">Compared Logistic Regression and k-NN classifiers on a held-out test set with precision, recall, and F1 scoring — k-NN won and is the model in production.</div>
         </div>
         <div class="tl-item">
           <div class="tl-dot"></div>

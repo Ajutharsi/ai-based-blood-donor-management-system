@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -12,6 +13,30 @@ class AiEligibilityService
     public function __construct()
     {
         $this->apiUrl = config('services.ai.url', 'http://127.0.0.1:8001');
+    }
+
+    /**
+     * The real name/accuracy of whatever eligibility model is currently
+     * deployed (see /model-info), for pages that describe the AI approach
+     * to users. Cached briefly so public pages (landing/about) don't hit
+     * the AI service on every request -- this changes only when the model
+     * is retrained, not per-request.
+     */
+    public function getModelInfo(): ?array
+    {
+        return Cache::remember('ai_eligibility_model_info', now()->addMinutes(10), function () {
+            try {
+                $response = Http::timeout(5)->get($this->apiUrl . '/model-info');
+
+                if ($response->successful() && $response->json('status') === 'success') {
+                    return $response->json();
+                }
+            } catch (\Exception $e) {
+                Log::warning('Model info unavailable: ' . $e->getMessage());
+            }
+
+            return null;
+        });
     }
 
     public function predict(array $donorData): array
@@ -31,7 +56,8 @@ class AiEligibilityService
                 return [
                     'eligible'   => $data['eligible']   ?? false,
                     'confidence' => $data['confidence']  ?? 0,
-                    'status'     => 'ai',
+                    'model'      => $data['model']       ?? 'unknown',
+                    'status'     => $data['status']      ?? 'success',
                 ];
             }
 
@@ -56,6 +82,7 @@ class AiEligibilityService
         return [
             'eligible'   => $eligible,
             'confidence' => $eligible ? 85.0 : 0.0,
+            'model'      => 'fallback',
             'status'     => 'fallback',
         ];
     }
@@ -66,11 +93,11 @@ public function predictResponse(array $donorData): array
 {
     try {
         $response = Http::timeout(10)->post($this->apiUrl . '/predict-response', [
-            'age'             => (float) ($donorData['age']        ?? 0),
-            'weight_kg'       => (float) ($donorData['weight_kg']  ?? 0),
-            'hemoglobin'      => (float) ($donorData['hemoglobin'] ?? 0),
-            'total_donations' => (float) ($donorData['total_donations'] ?? 0),
-            'gender'          => $donorData['gender'] ?? 'Male',
+            'age'         => (float) ($donorData['age']        ?? 0),
+            'weight_kg'   => (float) ($donorData['weight_kg']  ?? 0),
+            'hemoglobin'  => (float) ($donorData['hemoglobin'] ?? 0),
+            'blood_group' => $donorData['blood_group'] ?? 'O+',
+            'gender'      => $donorData['gender'] ?? 'Male',
         ]);
 
         if ($response->successful()) {

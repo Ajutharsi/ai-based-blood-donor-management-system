@@ -1,59 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LifeLink — AI-Based Blood Donor Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+An AI-powered blood donor management platform for Sri Lanka, connecting **Donors**, **Hospitals**, and **Administrators** through a Laravel web application backed by a Python/FastAPI machine-learning service.
 
-## About Laravel
+Built for the CSE6035 Development Project module (ICBT Campus). See `docs/` (or the accompanying project documentation) for the full academic report, proposal, and AI model evaluation.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## What it does
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Donors** register, manage a health profile (blood group, weight, hemoglobin, medical notes, profile photo), track their donation history, and get an AI-computed eligibility score.
+- **Hospitals** submit blood requests by blood group/urgency, and receive an AI-ranked list of matched eligible donors.
+- **Admins** manage all donor records, monitor eligibility, record real donations, and view system-wide analytics — including AI-driven blood-shortage alerts, demand forecasting, and donor clustering.
+- A floating **chatbot** (TF-IDF + k-NN intent classifier) answers donor questions about eligibility, blood group, cooldown period, and donation history.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Architecture
 
-## Learning Laravel
+```
+Browser (Blade views)
+        │
+        ▼
+Laravel 12 application  ──HTTP──▶  FastAPI AI service (Python/scikit-learn)
+        │                                  │
+        ▼                                  ▼
+   SQLite / MySQL                    Trained models (.pkl)
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Three independent auth guards (`donor`, `hospital`, `admin`) each with their own login, session, and protected route group — see `app/Http/Middleware/*Authenticated.php`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Requirements
 
-## Laravel Sponsors
+- PHP 8.2+, Composer
+- Node.js (for Vite asset building)
+- Python 3.10+ with `fastapi`, `uvicorn`, `pandas`, `scikit-learn`, `joblib` (for the AI service — see the separate `blood-ai-model` repository)
+- SQLite (default, zero-config) or MySQL
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Setup
 
-### Premium Partners
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Database (SQLite is the default — just create the file)
+touch database/database.sqlite
+php artisan migrate
 
-## Contributing
+# Storage (required for donor profile-photo uploads)
+php artisan storage:link
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Optional: seed an admin/hospital account for local testing
+php artisan db:seed --class=AdminSeeder
+php artisan db:seed --class=HospitalSeeder
 
-## Code of Conduct
+# Frontend assets
+npm install
+npm run build   # or `npm run dev` while developing
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Run the app
+php artisan serve
+```
 
-## Security Vulnerabilities
+**AI service** — the app degrades gracefully with rule-based fallbacks if the AI service isn't running, but for full AI-powered features, start the FastAPI service from the `blood-ai-model` project:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+cd blood-ai-model
+uvicorn api:app --reload --port 8001
+```
+
+Configure the URL via `AI_API_URL` in `.env` (defaults to `http://127.0.0.1:8001`).
+
+## Testing
+
+```bash
+php artisan test
+```
+
+108 automated feature tests cover registration, authentication, guard isolation, profile management, donation history, blood-request workflows, admin management, and AI-service failure resilience across all three modules (Donor, Hospital, Admin).
+
+## Key modules
+
+| Module | Location |
+|---|---|
+| Donor auth/profile/dashboard | `app/Http/Controllers/Donor/` |
+| Hospital auth/blood requests | `app/Http/Controllers/Hospital/` |
+| Admin dashboard/donor management | `app/Http/Controllers/Admin/` |
+| AI eligibility integration | `app/Services/AiEligibilityService.php` |
+| Chatbot proxy | `app/Http/Controllers/ChatController.php` |
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Built on the [Laravel framework](https://laravel.com) (MIT licensed). This application and its AI components are an academic project.

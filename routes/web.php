@@ -4,13 +4,21 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Donor\RegisterController;
 use App\Http\Controllers\Donor\LoginController;
 use App\Http\Controllers\Donor\DashboardController;
+use App\Http\Controllers\Donor\ProfileController;
 use App\Http\Controllers\Admin\LoginController    as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DonorController    as AdminDonorController;
+use App\Http\Controllers\Admin\HospitalController as AdminHospitalController;
+use App\Models\Donor;
+use App\Models\Hospital;
+use App\Services\AiEligibilityService;
 
 // ─── LANDING PAGE ─────────────────────────────────────────
 Route::get('/', function () {
-    return view('donor.blood_donor_landing_page');
+    $modelMetrics  = (new AiEligibilityService())->getModelInfo();
+    $donorCount    = Donor::count();
+    $hospitalCount = Hospital::count();
+    return view('donor.blood_donor_landing_page', compact('modelMetrics', 'donorCount', 'hospitalCount'));
 });
 
 // ─── DONOR AUTH ───────────────────────────────────────────
@@ -29,6 +37,9 @@ Route::prefix('donor')->name('donor.')->group(function () {
     Route::middleware('donor.auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     });
 
 });
@@ -54,23 +65,49 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/donors',                    [AdminDonorController::class, 'index'])->name('donors.index');
         Route::get('/donors/{donor}',            [AdminDonorController::class, 'show'])->name('donors.show');
         Route::post('/donors/{donor}/toggle',    [AdminDonorController::class, 'toggleEligibility'])->name('donors.toggle');
+        Route::post('/donors/{donor}/donations', [AdminDonorController::class, 'storeDonation'])->name('donors.donations.store');
         Route::delete('/donors/{donor}',         [AdminDonorController::class, 'destroy'])->name('donors.destroy');
+
+        // Hospital management
+        Route::get('/hospitals',                       [AdminHospitalController::class, 'index'])->name('hospitals.index');
+        Route::get('/hospitals/{hospital}',             [AdminHospitalController::class, 'show'])->name('hospitals.show');
+        Route::post('/hospitals/{hospital}/toggle',     [AdminHospitalController::class, 'toggleVerification'])->name('hospitals.toggle');
+        Route::delete('/hospitals/{hospital}',          [AdminHospitalController::class, 'destroy'])->name('hospitals.destroy');
     });
 
 });
 
 
 Route::get('/about', function () {
-    return view('donor/about');
+    $modelMetrics    = (new AiEligibilityService())->getModelInfo();
+    $hospitalCount   = Hospital::count();
+    return view('donor/about', compact('modelMetrics', 'hospitalCount'));
 })->name('about');
 
 Route::get('/contact', function () {
     return view('donor/contact');
 })->name('contact');
 
-Route::get('/Find', function () {
-    return view('donor/find_donor');
-})->name('Find');
+Route::get('/find-donors', function () {
+    $query = Donor::query()->where('is_eligible', true);
+
+    if (request()->filled('blood_group')) {
+        $query->where('blood_group', request('blood_group'));
+    }
+
+    if (request()->filled('district')) {
+        $query->where('district', request('district'));
+    }
+
+    if (request()->filled('min_donations')) {
+        $query->where('total_donations', '>=', (int) request('min_donations'));
+    }
+
+    $donors = $query->orderByDesc('ai_confidence')->paginate(9);
+    $modelMetrics = (new AiEligibilityService())->getModelInfo();
+
+    return view('donor/find_donor', compact('donors', 'modelMetrics'));
+})->name('find-donors');
 
 Route::get('/privacy', function () {
     return view('donor/privacy');
@@ -78,7 +115,9 @@ Route::get('/privacy', function () {
 
 
 use App\Http\Controllers\Hospital\LoginController      as HospitalLoginController;
+use App\Http\Controllers\Hospital\RegisterController   as HospitalRegisterController;
 use App\Http\Controllers\Hospital\DashboardController  as HospitalDashboardController;
+use App\Http\Controllers\Hospital\ProfileController    as HospitalProfileController;
 use App\Http\Controllers\Hospital\BloodRequestController;
 use App\Http\Controllers\ChatController;
 
@@ -90,6 +129,9 @@ Route::prefix('hospital')->name('hospital.')->group(function () {
 
     // Guest only
     Route::middleware('guest:hospital')->group(function () {
+        Route::get('/register', [HospitalRegisterController::class, 'showForm'])->name('register');
+        Route::post('/register', [HospitalRegisterController::class, 'register']);
+
         Route::get('/login',  [HospitalLoginController::class, 'showForm'])->name('login');
         Route::post('/login', [HospitalLoginController::class, 'login']);
     });
@@ -98,6 +140,9 @@ Route::prefix('hospital')->name('hospital.')->group(function () {
     Route::middleware('hospital.auth')->group(function () {
         Route::get('/dashboard', [HospitalDashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout',   [HospitalLoginController::class, 'logout'])->name('logout');
+
+        Route::get('/profile/edit', [HospitalProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [HospitalProfileController::class, 'update'])->name('profile.update');
 
         // Blood requests
         Route::get('/request',               [BloodRequestController::class, 'create'])->name('request.create');

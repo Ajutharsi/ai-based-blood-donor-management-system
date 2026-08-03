@@ -9,7 +9,7 @@ class LoginController extends Controller
 {
     public function showForm()
     {
-        return view('common.login_page');
+        return view('common.login_page', ['role' => 'admin']);
     }
 
     public function login(Request $request)
@@ -19,7 +19,10 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (auth('admin')->attempt($request->only('email','password'))) {
+        $credentials = $request->only('email', 'password');
+        $remember    = $request->boolean('remember');
+
+        if (auth('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
             return redirect()->route('admin.dashboard')
                              ->with('success', 'Welcome back, ' . auth('admin')->user()->name . '!');

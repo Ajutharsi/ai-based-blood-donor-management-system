@@ -201,8 +201,10 @@
     </div>
   </div>
   <div class="sb-bot">
-    <div class="sb-av">
-      {{ strtoupper(substr($donor->first_name,0,1).substr($donor->last_name,0,1)) }}
+    <div class="sb-av" @if($donor->profile_image) style="background-image:url('{{ \Illuminate\Support\Facades\Storage::url($donor->profile_image) }}');background-size:cover;background-position:center;" @endif>
+      @unless($donor->profile_image)
+        {{ strtoupper(substr($donor->first_name,0,1).substr($donor->last_name,0,1)) }}
+      @endunless
     </div>
   </div>
 </div>
@@ -223,7 +225,11 @@
         <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
       </div>
       <div class="donor-pill">
-        <div class="dp-av">{{ strtoupper(substr($donor->first_name,0,1).substr($donor->last_name,0,1)) }}</div>
+        <div class="dp-av" @if($donor->profile_image) style="background-image:url('{{ \Illuminate\Support\Facades\Storage::url($donor->profile_image) }}');background-size:cover;background-position:center;" @endif>
+        @unless($donor->profile_image)
+          {{ strtoupper(substr($donor->first_name,0,1).substr($donor->last_name,0,1)) }}
+        @endunless
+      </div>
         <span class="dp-name">{{ $donor->blood_group ?? 'N/A' }} Donor</span>
       </div>
       <form method="POST" action="{{ route('donor.logout') }}" style="margin:0;">
@@ -255,14 +261,14 @@
       $cooldownPct= 100;
       $lastDonation = $donor->last_donation_date;
       if ($lastDonation) {
-          $daysSince  = \Carbon\Carbon::parse($lastDonation)->diffInDays(now());
+          $daysSince  = (int) floor(\Carbon\Carbon::parse($lastDonation)->diffInDays(now()));
           $daysUntil  = max(0, 56 - $daysSince);
           $cooldownPct= min(100, round(($daysSince / 56) * 100));
       }
 
       // Donor since
       $donorSince = $donor->created_at ? \Carbon\Carbon::parse($donor->created_at)->format('M Y') : 'N/A';
-      $donorYears = $donor->created_at ? \Carbon\Carbon::parse($donor->created_at)->diffInYears(now()) : 0;
+      $donorYears = $donor->created_at ? (int) floor(\Carbon\Carbon::parse($donor->created_at)->diffInYears(now())) : 0;
 
       // AI metric bars
       $ageBar    = $age > 0    ? min(100, round(($age / 65) * 100))    : 0;
@@ -281,7 +287,7 @@
           {{ $eligible ? 'You are Eligible to Donate' : 'Currently Not Eligible' }}
         </div>
         <div class="eb-sub">
-  Logistic Regression model ·
+  {{ $modelMetrics['model'] ?? 'AI' }} model ·
   @if($donor->last_ai_check)
     Last AI check: {{ \Carbon\Carbon::parse($donor->last_ai_check)->diffForHumans() }}
   @else
@@ -431,8 +437,14 @@
             <div style="flex:1;background:var(--blue-bg);border:1px solid var(--blue-b);border-radius:9px;padding:0.85rem 1rem;display:flex;align-items:center;gap:8px;">
               <svg width="16" height="16" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
               <div>
-                <div style="font-size:0.78rem;font-weight:500;color:var(--blue);">Model: Logistic Regression</div>
-                <div style="font-size:0.7rem;color:#1E40AF;">95% system accuracy</div>
+                <div style="font-size:0.78rem;font-weight:500;color:var(--blue);">Model: {{ $modelMetrics['model'] ?? 'unavailable' }}</div>
+                <div style="font-size:0.7rem;color:#1E40AF;">
+                  @if(!empty($modelMetrics['accuracy']))
+                    {{ number_format($modelMetrics['accuracy'], 2) }}% system accuracy
+                  @else
+                    Accuracy not available
+                  @endif
+                </div>
               </div>
             </div>
           </div>
@@ -446,28 +458,25 @@
               <div class="card-s">{{ $donations }} completed donation{{ $donations !== 1 ? 's' : '' }}</div>
             </div>
           </div>
-          @if($donations > 0)
+          @if($donor->donations->count() > 0)
             <div class="hist-list">
-              {{-- 
-                When you have a donations table, replace this with:
-                @foreach($donor->donations as $d) ... @endforeach
-                For now showing a placeholder row per donation count
-              --}}
+              @foreach($donor->donations as $d)
               <div class="hist-item">
                 <div class="hist-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
                 <div class="hist-info">
                   <div class="hist-t">Whole Blood Donation</div>
-                  <div class="hist-s">{{ $donor->blood_group ?? 'N/A' }} · {{ $donor->donation_center ?? 'NBTS' }}</div>
+                  <div class="hist-s">{{ $d->blood_group ?? $donor->blood_group ?? 'N/A' }} · {{ $d->donation_center ?? 'NBTS' }}</div>
                 </div>
                 <div class="hist-right">
-                  <div class="hist-date">{{ $lastDonation ? \Carbon\Carbon::parse($lastDonation)->format('d M Y') : '—' }}</div>
+                  <div class="hist-date">{{ $d->donation_date->format('d M Y') }}</div>
                   <span class="badge b-ok">Completed</span>
                 </div>
               </div>
+              @endforeach
             </div>
           @else
             <div class="empty-state">
-              No donations yet. Register and donate to see your history here.
+              No recorded donations yet. Once you donate, your care team will log it here.
             </div>
           @endif
         </div>
@@ -481,7 +490,11 @@
         <div class="profile-card">
           <div class="pc-top">
             <div class="pc-circles"><div class="pcc pcc1"></div><div class="pcc pcc2"></div></div>
-            <div class="pc-avatar">{{ $initials }}</div>
+            <div class="pc-avatar" @if($donor->profile_image) style="background-image:url('{{ \Illuminate\Support\Facades\Storage::url($donor->profile_image) }}');background-size:cover;background-position:center;" @endif>
+              @unless($donor->profile_image)
+                {{ $initials }}
+              @endunless
+            </div>
             <div class="pc-name">{{ $donor->full_name }}</div>
             <div><span class="pc-blood">{{ $donor->blood_group ?? 'N/A' }} Donor</span></div>
           </div>
@@ -526,7 +539,7 @@
               <span class="pc-key">Member since</span>
               <span class="pc-val">{{ $donorSince }}</span>
             </div>
-            <button class="edit-btn">Edit Profile</button>
+            <a href="{{ route('donor.profile.edit') }}" class="edit-btn" style="display:block;text-align:center;text-decoration:none;">Edit Profile</a>
           </div>
         </div>
 

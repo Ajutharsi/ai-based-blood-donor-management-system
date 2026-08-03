@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Donor extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 
     protected $guard = 'donor';
 
@@ -17,11 +19,9 @@ class Donor extends Authenticatable
         'blood_group', 'weight_kg', 'hemoglobin',
         'total_donations', 'last_donation_date',
         'city', 'district', 'donation_center',
+        'profile_image', 'medical_condition',
         'medical_notes', 'is_eligible', 'ai_confidence','response_probability',
         'response_level', 'is_anomaly',  'anomaly_score','last_ai_check',
-
-
-    
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -40,5 +40,10 @@ class Donor extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function donations(): HasMany
+    {
+        return $this->hasMany(Donation::class)->latest('donation_date');
     }
 }

@@ -173,7 +173,7 @@
       <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       <span class="sb-tip">All Requests</span>
     </a>
-    <a href="#" class="sb-item">
+    <a href="{{ route('hospital.profile.edit') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       <span class="sb-tip">Settings</span>
     </a>
@@ -248,7 +248,7 @@
           </div>
           <div>
             <div class="ai-hd-t">AI Matched Donors</div>
-            <div class="ai-hd-s">Ranked by AI confidence score · Blood group {{ $bloodRequest->blood_group }}</div>
+            <div class="ai-hd-s">Ranked by match score — blood compatibility · district · AI signals · {{ ucfirst($bloodRequest->urgency) }} urgency</div>
           </div>
           <span class="ai-status">{{ $matchCount }} eligible found</span>
         </div>
@@ -264,9 +264,12 @@
           <div class="match-list">
             @foreach($matched_donors as $index => $donor)
               @php
-                $initials   = strtoupper(substr($donor->first_name,0,1).substr($donor->last_name,0,1));
-                $confidence = $donor->ai_confidence ?? 0;
-                $donations  = $donor->total_donations ?? 0;
+                $initials    = strtoupper(substr($donor->first_name,0,1).substr($donor->last_name,0,1));
+                $confidence  = $donor->ai_confidence ?? 0;
+                $donations   = $donor->total_donations ?? 0;
+                $matchScore  = $donor->match_score ?? 0;
+                $exactMatch  = $donor->match_breakdown['exact_blood_match'] ?? true;
+                $sameDistrict= $donor->match_breakdown['same_district'] ?? false;
               @endphp
               <div class="match-card {{ $index === 0 ? 'top' : '' }}">
                 @if($index === 0)
@@ -285,6 +288,15 @@
                   <span class="mc-blood">{{ $donor->blood_group }}</span>
                 </div>
 
+                {{-- MATCH SCORE BAR (primary ranking signal) --}}
+                <div class="mc-score-wrap">
+                  <span class="mc-score-label" style="font-weight:600;color:var(--red-dark);">Match</span>
+                  <div class="mc-score-bar">
+                    <div class="mc-score-fill" style="width:{{ $matchScore }}%;background:var(--red-dark);"></div>
+                  </div>
+                  <span class="mc-score-val" style="color:var(--red-dark);font-weight:600;">{{ number_format($matchScore,1) }}%</span>
+                </div>
+
                 {{-- AI SCORE BAR --}}
                 <div class="mc-score-wrap">
                   <span class="mc-score-label">AI score</span>
@@ -293,15 +305,6 @@
                   </div>
                   <span class="mc-score-val">{{ number_format($confidence,1) }}%</span>
                 </div>
-
-                {{-- AI ELIGIBILITY SCORE --}}
-<div class="mc-score-wrap">
-  <span class="mc-score-label">AI score</span>
-  <div class="mc-score-bar">
-    <div class="mc-score-fill" style="width:{{ $confidence }}%"></div>
-  </div>
-  <span class="mc-score-val">{{ number_format($confidence,1) }}%</span>
-</div>
 
 {{-- RESPONSE PROBABILITY --}}
 @if($donor->response_probability > 0)
@@ -324,14 +327,21 @@
                 {{-- TAGS --}}
                 <div class="mc-tags">
                   <span class="mc-tag tag-g">Eligible</span>
+                  @if($exactMatch)
+                    <span class="mc-tag tag-g">Exact {{ $donor->blood_group }} match</span>
+                  @else
+                    <span class="mc-tag tag-b">Compatible donor</span>
+                  @endif
+                  @if($sameDistrict)
+                    <span class="mc-tag tag-g">Same district</span>
+                  @elseif($donor->district)
+                    <span class="mc-tag tag-gray">{{ $donor->district }}</span>
+                  @endif
                   @if($donor->hemoglobin)
                     <span class="mc-tag tag-b">Hemo {{ number_format($donor->hemoglobin,1) }}</span>
                   @endif
                   @if($donor->weight_kg)
                     <span class="mc-tag tag-b">{{ $donor->weight_kg }} kg</span>
-                  @endif
-                  @if($donor->district)
-                    <span class="mc-tag tag-gray">{{ $donor->district }}</span>
                   @endif
                   @if($donations >= 5)
                     <span class="mc-tag tag-g">Experienced</span>
@@ -445,7 +455,7 @@
           </div>
           <div class="tip-item">
             <div class="tip-dot" style="background:var(--amber);"></div>
-            <div class="tip-text">Donors are ranked by <strong>AI confidence score</strong> — contact the top match first.</div>
+            <div class="tip-text">Donors are ranked by <strong>match score</strong> — blood compatibility, district, and AI-predicted reliability — contact the top match first.</div>
           </div>
         </div>
 

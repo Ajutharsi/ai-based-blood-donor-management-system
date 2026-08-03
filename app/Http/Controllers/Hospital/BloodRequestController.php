@@ -4,15 +4,19 @@ namespace App\Http\Controllers\Hospital;
 
 use App\Http\Controllers\Controller;
 use App\Models\BloodRequest;
-use App\Models\Donor;
+use App\Services\DonorMatchingService;
 use Illuminate\Http\Request;
 
 class BloodRequestController extends Controller
 {
-    // Show request form
+    public function __construct(private DonorMatchingService $matchingService)
+    {
+    }
+
+    // The request form lives on the hospital dashboard
     public function create()
     {
-        return view('hospital.request');
+        return redirect()->route('hospital.dashboard');
     }
 
     // Save blood request + find AI matched donors
@@ -41,12 +45,11 @@ class BloodRequestController extends Controller
             'status'       => 'pending',
         ]);
 
-        // Find matching eligible donors
-        $matched_donors = Donor::where('blood_group', $request->blood_group)
-                            ->where('is_eligible', true)
-                            ->orderByDesc('ai_confidence')
-                            ->take(10)
-                            ->get();
+        // AI-ranked donor matching: blood/Rh compatibility (not just an exact
+        // blood-group match), district proximity, and each donor's existing
+        // AI-computed eligibility confidence and response likelihood, weighted
+        // by this request's urgency. See DonorMatchingService for the scoring.
+        $matched_donors = $this->matchingService->findMatches($bloodRequest, 10);
 
         return view('hospital.matched_donors', compact(
             'bloodRequest',
@@ -80,6 +83,10 @@ class BloodRequestController extends Controller
     // Mark request as fulfilled
     public function fulfill(BloodRequest $bloodRequest)
     {
+        if ($bloodRequest->hospital_id !== auth('hospital')->id()) {
+            abort(403);
+        }
+
         $bloodRequest->update(['status' => 'fulfilled']);
         return back()->with('success', 'Blood request marked as fulfilled.');
     }
