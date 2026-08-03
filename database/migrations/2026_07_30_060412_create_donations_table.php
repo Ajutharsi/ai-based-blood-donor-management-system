@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('donations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('donor_id')->constrained('donors')->cascadeOnDelete();
+            $table->date('donation_date');
+            $table->string('blood_group')->nullable();
+            $table->string('donation_center')->nullable();
+            $table->unsignedTinyInteger('units')->default(1);
+            $table->text('notes')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('donations');
+    }
+};
