@@ -326,6 +326,14 @@
 
                 {{-- TAGS --}}
                 <div class="mc-tags">
+                  @php $donorResponse = $donorResponses->get($donor->id); @endphp
+                  @if($donorResponse)
+                    @if($donorResponse->status === 'available')
+                      <span class="mc-tag tag-g">✓ Confirmed available</span>
+                    @else
+                      <span class="mc-tag tag-gray">Responded: not available</span>
+                    @endif
+                  @endif
                   <span class="mc-tag tag-g">Eligible</span>
                   @if($exactMatch)
                     <span class="mc-tag tag-g">Exact {{ $donor->blood_group }} match</span>
@@ -362,11 +370,13 @@
                     <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     Email
                   </a>
-                  <button class="mc-btn primary"
-                          onclick="notifyDonor('{{ $donor->full_name }}', '{{ $donor->email }}', '{{ $bloodRequest->blood_group }}')">
-                    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    Notify
-                  </button>
+                  <form method="POST" action="{{ route('hospital.requests.notify', [$bloodRequest->id, $donor->id]) }}" style="flex:1;margin:0;">
+                    @csrf
+                    <button type="submit" class="mc-btn primary" style="width:100%;">
+                      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                      Notify
+                    </button>
+                  </form>
                 </div>
               </div>
             @endforeach
@@ -443,7 +453,7 @@
           </div>
           <div class="tip-item">
             <div class="tip-dot" style="background:var(--red);"></div>
-            <div class="tip-text">Click <strong>Notify</strong> to send an email alert to the donor about your blood request.</div>
+            <div class="tip-text">Click <strong>Notify</strong> to email the donor about your blood request, with a link for them to confirm their availability.</div>
           </div>
           <div class="tip-item">
             <div class="tip-dot" style="background:var(--blue);"></div>
@@ -463,9 +473,3 @@
     </div>
   </div>
 </div>
-
-<script>
-function notifyDonor(name, email, bloodGroup) {
-  alert('Notification sent to ' + name + ' (' + email + ') for ' + bloodGroup + ' blood request.\n\nIn production this will send a real email/SMS.');
-}
-</script>

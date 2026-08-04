@@ -300,6 +300,9 @@
                 </td>
                 <td>
                   <div class="actions">
+                    <a href="{{ route('hospital.requests.show', $req->id) }}" class="btn-fulfilled" style="text-decoration:none;">
+                      View Matches
+                    </a>
                     @if($req->status === 'pending')
                       <form method="POST" action="{{ route('hospital.requests.fulfill', $req->id) }}" style="margin:0;">
                         @csrf
@@ -308,8 +311,6 @@
                           ✓ Fulfill
                         </button>
                       </form>
-                    @else
-                      <span class="btn-fulfilled">{{ ucfirst($req->status) }}</span>
                     @endif
                   </div>
                 </td>

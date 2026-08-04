@@ -164,9 +164,9 @@
     LifeLink
   </div>
   <div class="nav-links">
-     <a href="#">Home</a>
+     <a href="{{ route('home') }}">Home</a>
     <a href="{{route('find-donors')}}">Find Donors</a>
-    <a href="">Hospitals</a>
+    <a href="{{ route('hospital.login') }}">Hospitals</a>
      <a href="{{ route('about') }}">About</a>
       <a href="{{ route('contact') }}">Contact</a>
   </div>
@@ -399,7 +399,7 @@
       <div class="footer-col">
         <h4>Legal</h4>
         <a href="/privacy">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="/terms">Terms of Service</a>
       </div>
     </div>
     <div class="footer-bottom">

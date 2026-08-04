@@ -5,10 +5,13 @@ use App\Http\Controllers\Donor\RegisterController;
 use App\Http\Controllers\Donor\LoginController;
 use App\Http\Controllers\Donor\DashboardController;
 use App\Http\Controllers\Donor\ProfileController;
+use App\Http\Controllers\Donor\BloodRequestController as DonorBloodRequestController;
 use App\Http\Controllers\Admin\LoginController    as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DonorController    as AdminDonorController;
 use App\Http\Controllers\Admin\HospitalController as AdminHospitalController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\AiPredictionController as AdminAiPredictionController;
 use App\Models\Donor;
 use App\Models\Hospital;
 use App\Services\AiEligibilityService;
@@ -19,7 +22,7 @@ Route::get('/', function () {
     $donorCount    = Donor::count();
     $hospitalCount = Hospital::count();
     return view('donor.blood_donor_landing_page', compact('modelMetrics', 'donorCount', 'hospitalCount'));
-});
+})->name('home');
 
 // ─── DONOR AUTH ───────────────────────────────────────────
 Route::prefix('donor')->name('donor.')->group(function () {
@@ -40,6 +43,9 @@ Route::prefix('donor')->name('donor.')->group(function () {
 
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+        Route::get('/requests', [DonorBloodRequestController::class, 'index'])->name('requests.index');
+        Route::post('/requests/{bloodRequest}/respond', [DonorBloodRequestController::class, 'respond'])->name('requests.respond');
     });
 
 });
@@ -73,6 +79,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/hospitals/{hospital}',             [AdminHospitalController::class, 'show'])->name('hospitals.show');
         Route::post('/hospitals/{hospital}/toggle',     [AdminHospitalController::class, 'toggleVerification'])->name('hospitals.toggle');
         Route::delete('/hospitals/{hospital}',          [AdminHospitalController::class, 'destroy'])->name('hospitals.destroy');
+
+        // AI prediction audit log
+        Route::get('/ai-predictions', [AdminAiPredictionController::class, 'index'])->name('ai-predictions.index');
+
+        // Admin profile / settings
+        Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
     });
 
 });
@@ -113,6 +126,10 @@ Route::get('/privacy', function () {
     return view('donor/privacy');
 })->name('privacy');
 
+Route::get('/terms', function () {
+    return view('donor/terms');
+})->name('terms');
+
 
 use App\Http\Controllers\Hospital\LoginController      as HospitalLoginController;
 use App\Http\Controllers\Hospital\RegisterController   as HospitalRegisterController;
@@ -148,7 +165,9 @@ Route::prefix('hospital')->name('hospital.')->group(function () {
         Route::get('/request',               [BloodRequestController::class, 'create'])->name('request.create');
         Route::post('/request',              [BloodRequestController::class, 'store'])->name('request.store');
         Route::get('/requests',              [BloodRequestController::class, 'index'])->name('requests.index');
+        Route::get('/requests/{bloodRequest}', [BloodRequestController::class, 'show'])->name('requests.show');
         Route::post('/requests/{bloodRequest}/fulfill', [BloodRequestController::class, 'fulfill'])->name('requests.fulfill');
+        Route::post('/requests/{bloodRequest}/notify/{donor}', [BloodRequestController::class, 'notifyDonor'])->name('requests.notify');
     });
 
 });

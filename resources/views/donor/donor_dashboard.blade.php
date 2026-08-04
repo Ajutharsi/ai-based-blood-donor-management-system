@@ -17,7 +17,7 @@
   .sb-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;}
   .sb-logo svg{width:18px;height:18px;fill:white;}
   .sb-nav{display:flex;flex-direction:column;gap:4px;align-items:center;flex:1;width:100%;}
-  .sb-item{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;position:relative;}
+  .sb-item{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;position:relative;text-decoration:none;}
   .sb-item svg{width:20px;height:20px;stroke:rgba(255,255,255,0.35);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
   .sb-item:hover svg{stroke:rgba(255,255,255,0.75);}
   .sb-item.active{background:rgba(255,255,255,0.15);}
@@ -179,26 +179,30 @@
     <svg viewBox="0 0 24 24"><path d="M12 2C12 2 5 9.5 5 14a7 7 0 0014 0C19 9.5 12 2 12 2z"/></svg>
   </div>
   <div class="sb-nav">
-    <div class="sb-item active">
+    <a href="{{ route('donor.dashboard') }}" class="sb-item {{ request()->routeIs('donor.dashboard') ? 'active' : '' }}">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       <span class="sb-tip">Dashboard</span>
-    </div>
-    <div class="sb-item">
+    </a>
+    <a href="{{ route('donor.requests.index') }}" class="sb-item {{ request()->routeIs('donor.requests.index') ? 'active' : '' }}">
+      <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <span class="sb-tip">Blood Requests</span>
+    </a>
+    <a href="{{ route('donor.dashboard') }}#ai-health" class="sb-item">
       <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
       <span class="sb-tip">Eligibility</span>
-    </div>
-    <div class="sb-item">
+    </a>
+    <a href="{{ route('donor.dashboard') }}#donation-history" class="sb-item">
       <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       <span class="sb-tip">History</span>
-    </div>
-    <div class="sb-item">
+    </a>
+    <a href="{{ route('donor.dashboard') }}#notifications" class="sb-item">
       <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
       <span class="sb-tip">Notifications</span>
-    </div>
-    <div class="sb-item">
+    </a>
+    <a href="{{ route('donor.profile.edit') }}" class="sb-item {{ request()->routeIs('donor.profile.edit') ? 'active' : '' }}">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       <span class="sb-tip">Settings</span>
-    </div>
+    </a>
   </div>
   <div class="sb-bot">
     <div class="sb-av" @if($donor->profile_image) style="background-image:url('{{ \Illuminate\Support\Facades\Storage::url($donor->profile_image) }}');background-size:cover;background-position:center;" @endif>
@@ -360,7 +364,7 @@
       <div style="display:flex;flex-direction:column;gap:14px;">
 
         {{-- AI HEALTH BREAKDOWN --}}
-        <div class="card">
+        <div class="card" id="ai-health" style="scroll-margin-top:74px;">
           <div class="card-hd">
             <div>
               <div class="card-t">AI Health Breakdown</div>
@@ -451,7 +455,7 @@
         </div>
 
         {{-- DONATION HISTORY --}}
-        <div class="card">
+        <div class="card" id="donation-history" style="scroll-margin-top:74px;">
           <div class="card-hd">
             <div>
               <div class="card-t">Donation History</div>
@@ -544,7 +548,7 @@
         </div>
 
         {{-- NOTIFICATIONS --}}
-        <div class="card">
+        <div class="card" id="notifications" style="scroll-margin-top:74px;">
           <div class="card-hd">
             <div><div class="card-t">Notifications</div></div>
           </div>

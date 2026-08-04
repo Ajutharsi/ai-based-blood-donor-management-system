@@ -242,9 +242,9 @@
     LifeLink
   </div>
   <div class="nav-links">
-    <a href="#">Home</a>
+    <a href="{{ route('home') }}">Home</a>
     <a href="{{route('find-donors')}}">Find Donors</a>
-    <a href="">Hospitals</a>
+    <a href="{{ route('hospital.login') }}">Hospitals</a>
      <a href="{{ route('about') }}">About</a>
       <a href="{{ route('contact') }}">Contact</a>
   </div>
@@ -463,9 +463,9 @@
   </div>
   <div class="footer-copy">© 2026 LifeLink Blood Donor Management System</div>
   <div class="footer-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
+    <a href="{{ route('privacy') }}">Privacy</a>
+    <a href="{{ route('terms') }}">Terms</a>
+    <a href="{{ route('contact') }}">Contact</a>
   </div>
 </footer>
 {{-- Donor dashboard, Admin dashboard, Hospital dashboard --}}

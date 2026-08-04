@@ -46,4 +46,9 @@ class Donor extends Authenticatable
     {
         return $this->hasMany(Donation::class)->latest('donation_date');
     }
+
+    public function responses(): HasMany
+    {
+        return $this->hasMany(DonorResponse::class);
+    }
 }

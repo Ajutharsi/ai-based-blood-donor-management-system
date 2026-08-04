@@ -134,11 +134,11 @@
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
       <span class="sb-tooltip">Hospitals</span>
     </a>
-    <a href="#" class="sb-item">
+    <a href="{{ route('admin.ai-predictions.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
       <span class="sb-tooltip">AI Predictions</span>
     </a>
-    <a href="#" class="sb-item">
+    <a href="{{ route('admin.profile.edit') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       <span class="sb-tooltip">Settings</span>
     </a>

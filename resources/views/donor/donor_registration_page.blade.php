@@ -481,7 +481,7 @@
         </div>
         <div class="checkbox-row">
           <input type="checkbox" id="c3" required>
-          <label for="c3">I agree to the <a href="#" style="color:var(--red)">Terms of Service</a> and <a href="#" style="color:var(--red)">Privacy Policy</a>.</label>
+          <label for="c3">I agree to the <a href="{{ route('terms') }}" target="_blank" style="color:var(--red)">Terms of Service</a> and <a href="{{ route('privacy') }}" target="_blank" style="color:var(--red)">Privacy Policy</a>.</label>
         </div>
       </div>
 

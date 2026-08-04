@@ -21,4 +21,9 @@ class BloodRequest extends Model
     {
         return $this->belongsTo(Hospital::class);
     }
+
+    public function responses()
+    {
+        return $this->hasMany(DonorResponse::class);
+    }
 }

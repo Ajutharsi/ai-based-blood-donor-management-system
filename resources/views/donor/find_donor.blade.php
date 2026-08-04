@@ -333,7 +333,7 @@
       </div>
       <div class="footer-col"><h4>Platform</h4><a href="/">Home</a><a href="/about">About</a><a href="/find-donors">Find Donors</a><a href="/contact">Contact</a></div>
       <div class="footer-col"><h4>Donors</h4><a href="{{ route('donor.register') }}">Register</a><a href="{{ route('donor.login') }}">Sign In</a></div>
-      <div class="footer-col"><h4>Legal</h4><a href="/privacy">Privacy Policy</a><a href="#">Terms of Service</a></div>
+      <div class="footer-col"><h4>Legal</h4><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a></div>
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">© 2025 LifeLink. National Blood Transfusion Service of Sri Lanka.</div>
