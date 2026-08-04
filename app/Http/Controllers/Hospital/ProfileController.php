@@ -26,6 +26,8 @@ class ProfileController extends Controller
             'phone'           => $request->phone,
             'city'            => $request->city,
             'district'        => $request->district,
+            'latitude'        => $request->latitude,
+            'longitude'       => $request->longitude,
             'address'         => $request->address,
         ];
 

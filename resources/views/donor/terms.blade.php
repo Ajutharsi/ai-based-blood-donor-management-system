@@ -1,14 +1,14 @@
 
 <style>
     :root {
-        --red: #C0392B;
-        --red-dark: #96281B;
-        --red-light: #E74C3C;
+        --primary: #1D4ED8;
+        --primary-dark: #1E3A8A;
+        --primary-light: #3B82F6;
         --white: #FFFFFF;
-        --off-white: #FDF8F8;
-        --gray-light: #F5F0F0;
+        --off-white: #F8FAFC;
+        --gray-light: #F1F5F9;
         --gray: #888;
-        --text: #1A1A1A;
+        --text: #1E293B;
         --text-soft: #555;
     }
 
@@ -21,7 +21,7 @@
     }
 
     .privacy-hero {
-        background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 60%, #8B0000 100%);
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, #172554 100%);
         padding: 80px 20px 60px;
         text-align: center;
         position: relative;
@@ -106,13 +106,13 @@
 
     .toc-card {
         background: #fff;
-        border: 1px solid #E8DEDE;
+        border: 1px solid #E2E8F0;
         border-radius: 12px;
         overflow: hidden;
     }
 
     .toc-card .toc-head {
-        background: var(--red);
+        background: var(--primary);
         color: #fff;
         padding: 14px 18px;
         font-size: 0.78rem;
@@ -140,9 +140,9 @@
 
     .toc-card ul li a:hover,
     .toc-card ul li a.active {
-        color: var(--red);
-        border-left-color: var(--red);
-        background: #FEF5F5;
+        color: var(--primary);
+        border-left-color: var(--primary);
+        background: #EFF6FF;
     }
 
     .privacy-content section {
@@ -156,13 +156,13 @@
         gap: 14px;
         margin-bottom: 20px;
         padding-bottom: 14px;
-        border-bottom: 2px solid #EDE0E0;
+        border-bottom: 2px solid #E2E8F0;
     }
 
     .section-icon {
         width: 42px;
         height: 42px;
-        background: linear-gradient(135deg, var(--red), var(--red-light));
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -180,7 +180,7 @@
 
     .section-num {
         font-size: 0.72rem;
-        color: var(--red);
+        color: var(--primary);
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -206,7 +206,7 @@
         color: var(--text-soft);
         font-size: 0.95rem;
         line-height: 1.6;
-        border-bottom: 1px dashed #EDE0E0;
+        border-bottom: 1px dashed #E2E8F0;
     }
 
     .privacy-content ul li:last-child { border-bottom: none; }
@@ -215,15 +215,15 @@
         content: '▸';
         position: absolute;
         left: 0;
-        color: var(--red);
+        color: var(--primary);
         font-size: 0.75rem;
         top: 9px;
     }
 
     .highlight-box {
-        background: linear-gradient(135deg, #FEF5F5, #FFF8F8);
-        border: 1px solid #F0DADA;
-        border-left: 4px solid var(--red);
+        background: linear-gradient(135deg, #EFF6FF, #F8FAFC);
+        border: 1px solid rgba(29,78,216,0.15);
+        border-left: 4px solid var(--primary);
         border-radius: 8px;
         padding: 18px 20px;
         margin: 20px 0;
@@ -235,10 +235,10 @@
         color: var(--text);
     }
 
-    .highlight-box strong { color: var(--red); }
+    .highlight-box strong { color: var(--primary); }
 
     .contact-card {
-        background: linear-gradient(135deg, var(--red-dark), var(--red));
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
         border-radius: 14px;
         padding: 30px;
         color: #fff;
@@ -275,7 +275,7 @@
     .contact-card a {
         display: inline-block;
         background: #fff;
-        color: var(--red);
+        color: var(--primary);
         padding: 8px 20px;
         border-radius: 6px;
         font-weight: 700;
@@ -290,14 +290,14 @@
         text-align: center;
         margin-top: 40px;
         padding-top: 30px;
-        border-top: 1px solid #EDE0E0;
+        border-top: 1px solid #E2E8F0;
     }
 
     .back-top a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        color: var(--red);
+        color: var(--primary);
         text-decoration: none;
         font-size: 0.88rem;
         font-weight: 600;
@@ -357,7 +357,7 @@
             </div>
 
             <p>These Terms of Service ("Terms") govern your access to and use of LifeLink ("we", "us", "our"), a blood donor management platform serving donors, hospitals, and administrators across Sri Lanka.</p>
-            <p>By registering a Donor, Hospital, or Administrator account, you confirm that you have read, understood, and agree to be bound by these Terms and by our <a href="{{ route('privacy') }}" style="color:var(--red);">Privacy Policy</a>.</p>
+            <p>By registering a Donor, Hospital, or Administrator account, you confirm that you have read, understood, and agree to be bound by these Terms and by our <a href="{{ route('privacy') }}" style="color:var(--primary);">Privacy Policy</a>.</p>
         </section>
 
         <section id="eligibility">
@@ -379,7 +379,7 @@
 
         <section id="donor">
             <div class="section-header">
-                <div class="section-icon">🩸</div>
+                <div class="section-icon">💧</div>
                 <div>
                     <span class="section-num">Section 03</span>
                     <h2>Donor Responsibilities</h2>

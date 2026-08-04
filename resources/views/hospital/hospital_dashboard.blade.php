@@ -2,12 +2,13 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
-    --amber:#D97706;--amber-bg:#FFFBEB;--amber-b:#FDE68A;
+    --amber:#D97706;--amber-dark:#92400E;--amber-bg:#FFFBEB;--amber-b:#FDE68A;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
+    --accent:#06B6D4;--accent-light:#ECFEFF;--accent-dark:#0E7490;
     --sb:66px;
   }
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
@@ -37,32 +38,56 @@
   .tb-badge span{width:5px;height:5px;border-radius:50%;background:var(--blue);display:inline-block;}
   .tb-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text);}
   .tb-right{display:flex;align-items:center;gap:10px;}
+  .notif-wrap{position:relative;}
+  .notif{width:36px;height:36px;border-radius:8px;background:var(--gray);border:1px solid var(--gray-b);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;}
+  .notif svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.75;}
+  .notif-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:var(--primary);color:#fff;font-size:0.6rem;font-weight:600;display:flex;align-items:center;justify-content:center;line-height:1;}
+  .notif-dropdown{position:absolute;top:46px;right:0;width:340px;max-height:420px;overflow-y:auto;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,0.14);z-index:200;display:none;}
+  .notif-dropdown.open{display:block;}
+  .notif-dd-head{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid var(--border);}
+  .notif-dd-title{font-size:0.82rem;font-weight:600;color:var(--text);}
+  .notif-dd-markall{font-size:0.7rem;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;}
+  .notif-dd-item{display:block;width:100%;text-align:left;background:none;border:none;padding:0.75rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;font-family:inherit;}
+  .notif-dd-item:last-child{border-bottom:none;}
+  .notif-dd-item:hover{background:var(--off);}
+  .notif-dd-item.unread{background:var(--primary-light);}
+  .notif-dd-row{display:flex;gap:8px;align-items:flex-start;}
+  .notif-dd-text{font-size:0.78rem;color:var(--text);line-height:1.45;}
+  .notif-dd-text strong{font-weight:600;}
+  .notif-dd-time{font-size:0.66rem;color:var(--muted);margin-top:3px;}
+  .notif-dd-empty{padding:2rem 1rem;text-align:center;font-size:0.8rem;color:var(--muted);}
+  .notif-dd-foot{padding:0.6rem 1rem;text-align:center;border-top:1px solid var(--border);}
+  .notif-dd-foot a{font-size:0.75rem;color:var(--primary);text-decoration:none;font-weight:500;}
+  .n-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .nd-g{background:var(--green, #16A34A);}
+  .nd-b{background:var(--primary);}
+  .nd-r{background:var(--warning, #D97706);}
   .hosp-pill{display:flex;align-items:center;gap:8px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:20px;padding:0.3rem 0.9rem 0.3rem 0.5rem;}
   .hosp-av{width:24px;height:24px;border-radius:6px;background:var(--blue);display:flex;align-items:center;justify-content:center;}
   .hosp-av svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:2;}
   .hosp-name{font-size:0.78rem;font-weight:500;color:var(--blue);}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;}
 
   /* ALERTS */
   .alert-success{background:var(--green-bg);border:1px solid var(--green-b);border-radius:8px;padding:0.85rem 1.1rem;margin-bottom:1.25rem;font-size:0.85rem;color:var(--green);}
-  .alert-error{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:0.85rem 1.1rem;margin-bottom:1.25rem;font-size:0.85rem;color:#991B1B;}
+  .alert-error{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:0.85rem 1.1rem;margin-bottom:1.25rem;font-size:0.85rem;color:#92400E;}
 
   /* STAT ROW */
   .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem;}
   .sc{background:white;border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;}
   .sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
   .sc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
-  .ic-r{background:var(--red-light);} .ic-r svg{stroke:var(--red);}
+  .ic-r{background:var(--primary-light);} .ic-r svg{stroke:var(--primary);}
   .ic-b{background:#EFF6FF);}        .ic-b svg{stroke:var(--blue);}
   .ic-g{background:var(--green-bg);} .ic-g svg{stroke:var(--green);}
   .ic-a{background:var(--amber-bg);} .ic-a svg{stroke:var(--amber);}
   .sc-icon svg{width:16px;height:16px;fill:none;stroke-width:1.75;stroke-linecap:round;}
   .sc-trend{font-size:0.68rem;font-weight:500;padding:2px 7px;border-radius:20px;}
-  .t-r{background:var(--red-light);color:var(--red-dark);}
+  .t-r{background:var(--primary-light);color:var(--primary-dark);}
   .t-g{background:var(--green-bg);color:var(--green);}
   .t-b{background:#EFF6FF;color:var(--blue);}
   .t-a{background:var(--amber-bg);color:var(--amber);}
@@ -77,39 +102,39 @@
   .card-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;}
   .card-t{font-size:0.9rem;font-weight:500;color:var(--text);}
   .card-s{font-size:0.72rem;color:var(--muted);margin-top:2px;}
-  .card-act{font-size:0.75rem;color:var(--red);text-decoration:none;cursor:pointer;}
+  .card-act{font-size:0.75rem;color:var(--primary);text-decoration:none;cursor:pointer;}
 
   /* REQUEST FORM */
   .form-label{font-size:0.75rem;font-weight:500;color:var(--text);margin-bottom:8px;display:block;}
-  .form-label span{color:var(--red);}
+  .form-label span{color:var(--amber);}
   .blood-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:1.25rem;}
   .bb{padding:0.55rem 0.3rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;}
-  .bb:hover{border-color:var(--red);color:var(--red);background:var(--red-light);}
-  .bb.sel{border-color:var(--red);color:var(--red);background:var(--red-light);}
+  .bb:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light);}
+  .bb.sel{border-color:var(--primary);color:var(--primary);background:var(--primary-light);}
   .bb-sub{font-size:0.6rem;display:block;opacity:0.65;margin-top:1px;}
   .urg-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:1.25rem;}
   .ub{padding:0.55rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;}
   .ub svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
   .ub.sel-std{border-color:var(--green);color:var(--green);background:var(--green-bg);}
   .ub.sel-urg{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
-  .ub.sel-crit{border-color:var(--red);color:var(--red-dark);background:var(--red-light);}
+  .ub.sel-crit{border-color:var(--amber-dark);color:var(--amber-dark);background:var(--amber-b);}
   .form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.1rem;}
   .form-row.two{grid-template-columns:1fr 1fr;}
   .field label{display:block;font-size:0.75rem;font-weight:500;color:var(--text);margin-bottom:5px;}
   .field input,.field select,.field textarea{width:100%;padding:0.6rem 0.85rem;border:1px solid var(--gray-b);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.835rem;color:var(--text);background:white;outline:none;transition:border 0.2s;appearance:none;-webkit-appearance:none;}
   .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B3B40' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:2rem;}
-  .field input:focus,.field select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(200,25,42,0.07);}
+  .field input:focus,.field select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(29,78,216,0.07);}
   .field textarea{min-height:70px;resize:none;}
-  .error-msg{font-size:0.72rem;color:var(--red);margin-top:3px;display:block;}
-  .btn-req{width:100%;padding:0.8rem;border:none;border-radius:9px;background:var(--red);color:white;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:0.5rem;}
-  .btn-req:hover{background:var(--red-dark);transform:translateY(-1px);}
+  .error-msg{font-size:0.72rem;color:var(--amber-dark);margin-top:3px;display:block;}
+  .btn-req{width:100%;padding:0.8rem;border:none;border-radius:9px;background:var(--primary);color:white;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:0.5rem;}
+  .btn-req:hover{background:var(--primary-dark);transform:translateY(-1px);}
   .btn-req svg{width:16px;height:16px;stroke:white;fill:none;stroke-width:2;}
 
   /* REQUEST HISTORY */
   .rh-list{display:flex;flex-direction:column;gap:0;}
-  .rh-item{display:flex;align-items:center;gap:12px;padding:0.85rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .rh-item{display:flex;align-items:center;gap:12px;padding:0.85rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .rh-item:last-child{border-bottom:none;}
-  .rh-blood{width:40px;height:40px;border-radius:9px;background:var(--red-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;color:var(--red-dark);flex-shrink:0;}
+  .rh-blood{width:40px;height:40px;border-radius:9px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;color:var(--primary-dark);flex-shrink:0;}
   .rh-info{flex:1;}
   .rh-t{font-size:0.85rem;font-weight:400;color:var(--text);}
   .rh-s{font-size:0.72rem;color:var(--muted);margin-top:2px;}
@@ -119,9 +144,9 @@
   .b-pen{background:#EFF6FF;color:#1D4ED8;}
   .b-ful{background:var(--green-bg);color:var(--green);}
   .b-can{background:var(--gray);color:var(--muted);}
-  .b-urg{background:var(--red-light);color:var(--red-dark);}
+  .b-urg{background:var(--amber-bg);color:var(--amber);}
   .b-std{background:var(--gray);color:var(--muted);}
-  .b-crit{background:#FEF2F2;color:#991B1B;}
+  .b-crit{background:var(--amber-b);color:var(--amber-dark);}
 
   /* HOSPITAL INFO */
   .hosp-info-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
@@ -131,7 +156,7 @@
   .hi-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:white;margin-bottom:4px;}
   .hi-tag{display:inline-block;background:rgba(59,130,246,0.2);color:#93C5FD;font-size:0.7rem;padding:2px 10px;border-radius:20px;}
   .hi-body{padding:1rem 1.25rem;}
-  .hi-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .hi-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .hi-row:last-child{border-bottom:none;}
   .hi-key{font-size:0.75rem;color:var(--muted);}
   .hi-val{font-size:0.8rem;font-weight:500;color:var(--text);}
@@ -158,6 +183,14 @@
       <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       <span class="sb-tip">All Requests</span>
     </a>
+    <a href="{{ route('hospital.appointments.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tip">Appointments</span>
+    </a>
+    <a href="{{ route('hospital.inventory.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+      <span class="sb-tip">Blood Inventory</span>
+    </a>
     <a href="{{ route('hospital.profile.edit') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       <span class="sb-tip">Settings</span>
@@ -180,6 +213,42 @@
       <div class="tb-title">{{ $hospital->name }}</div>
     </div>
     <div class="tb-right">
+      <div class="notif-wrap">
+        <button type="button" class="notif" onclick="toggleNotifDropdown(event)">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          @if($unreadNotifications > 0)
+            <span class="notif-badge">{{ $unreadNotifications > 9 ? '9+' : $unreadNotifications }}</span>
+          @endif
+        </button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-head">
+            <span class="notif-dd-title">Notifications</span>
+            @if($unreadNotifications > 0)
+              <form method="POST" action="{{ route('hospital.notifications.readAll') }}" style="margin:0;">
+                @csrf
+                <button type="submit" class="notif-dd-markall">Mark all read</button>
+              </form>
+            @endif
+          </div>
+          @forelse($notifications as $n)
+            <form method="POST" action="{{ route('hospital.notifications.read', $n->id) }}" style="margin:0;">
+              @csrf
+              <button type="submit" class="notif-dd-item {{ $n->read_at ? '' : 'unread' }}">
+                <div class="notif-dd-row">
+                  <div class="n-dot {{ $n->dotClass() }}" style="margin-top:5px;"></div>
+                  <div>
+                    <div class="notif-dd-text"><strong>{{ $n->title }}</strong><br>{{ $n->message }}</div>
+                    <div class="notif-dd-time">{{ $n->created_at->diffForHumans() }}</div>
+                  </div>
+                </div>
+              </button>
+            </form>
+          @empty
+            <div class="notif-dd-empty">No notifications yet.</div>
+          @endforelse
+          <div class="notif-dd-foot"><a href="{{ route('hospital.notifications.index') }}">View all →</a></div>
+        </div>
+      </div>
       <div class="hosp-pill">
         <div class="hosp-av">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
@@ -292,7 +361,7 @@
             {{-- UNITS + WARD + DATE --}}
             <div class="form-row">
               <div class="field">
-                <label>Units Needed <span style="color:var(--red)">*</span></label>
+                <label>Units Needed <span style="color:var(--amber)">*</span></label>
                 <input type="number" name="units_needed"
                        value="{{ old('units_needed', 1) }}"
                        min="1" max="20" placeholder="e.g. 2">
@@ -358,6 +427,44 @@
               <div class="empty-state">No requests yet. Submit your first blood request above.</div>
             @endforelse
           </div>
+        </div>
+
+        {{-- APPOINTMENTS --}}
+        <div class="card">
+          <div class="card-hd">
+            <div>
+              <div class="card-t">Today's Appointments</div>
+              <div class="card-s">{{ $pendingAppointmentsCount }} awaiting approval</div>
+            </div>
+            <a href="{{ route('hospital.appointments.index') }}" class="card-act">Manage appointments →</a>
+          </div>
+          <div class="rh-list">
+            @forelse($todayAppointments as $a)
+              <div class="rh-item">
+                <div class="rh-blood">{{ $a->bloodRequest?->blood_group }}</div>
+                <div class="rh-info">
+                  <div class="rh-t">{{ $a->donor?->full_name ?? 'Donor' }}</div>
+                  <div class="rh-s">{{ $a->appointment_time }} · {{ ucfirst($a->status) }}</div>
+                </div>
+              </div>
+            @empty
+              <div class="empty-state">No appointments scheduled for today.</div>
+            @endforelse
+          </div>
+          @if($upcomingAppointments->isNotEmpty())
+            <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin:0.9rem 0 0.5rem;">Upcoming</div>
+            <div class="rh-list">
+              @foreach($upcomingAppointments as $a)
+                <div class="rh-item">
+                  <div class="rh-blood">{{ $a->bloodRequest?->blood_group }}</div>
+                  <div class="rh-info">
+                    <div class="rh-t">{{ $a->donor?->full_name ?? 'Donor' }}</div>
+                    <div class="rh-s">{{ $a->appointment_date->format('d M Y') }} · {{ $a->appointment_time }}</div>
+                  </div>
+                </div>
+              @endforeach
+            </div>
+          @endif
         </div>
 
       </div>
@@ -427,15 +534,48 @@
             @foreach($bgCounts as $bg => $count)
               @php $pct = $maxDonors > 0 ? round(($count/$maxDonors)*100) : 0; @endphp
               <div style="display:flex;align-items:center;gap:8px;">
-                <span style="display:inline-block;background:var(--red-light);color:var(--red-dark);font-size:0.72rem;font-weight:600;padding:2px 7px;border-radius:4px;width:36px;text-align:center;flex-shrink:0;">{{ $bg }}</span>
+                <span style="display:inline-block;background:var(--accent-light);color:var(--accent-dark);font-size:0.72rem;font-weight:600;padding:2px 7px;border-radius:4px;width:36px;text-align:center;flex-shrink:0;">{{ $bg }}</span>
                 <div style="flex:1;background:var(--gray);border-radius:3px;height:5px;overflow:hidden;">
-                  <div style="height:5px;border-radius:3px;background:var(--red);width:{{ $pct }}%"></div>
+                  <div style="height:5px;border-radius:3px;background:var(--accent);width:{{ $pct }}%"></div>
                 </div>
                 <span style="font-size:0.72rem;font-weight:500;color:var(--text);min-width:20px;text-align:right;">{{ $count }}</span>
               </div>
             @endforeach
           </div>
           <div style="font-size:0.7rem;color:var(--muted);margin-top:0.75rem;">Eligible donors available per blood group</div>
+        </div>
+
+        {{-- NEARBY DONORS (real distance, requires this hospital's location) --}}
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-t">Nearby Eligible Donors</div>
+          </div>
+          @if(!$hospital->hasLocation())
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5;">
+              Set your hospital's location in <a href="{{ route('hospital.profile.edit') }}" style="color:var(--primary);font-weight:500;">Profile Settings</a> to see nearby donors ranked by real distance.
+            </div>
+          @elseif($nearbyDonors->isEmpty())
+            <div style="font-size:0.78rem;color:var(--muted);">No eligible donors have set their location yet.</div>
+          @else
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.85rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);">
+              <div>
+                <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;">Avg. Distance</div>
+                <div style="font-size:1.1rem;font-weight:700;color:var(--text);font-family:'Playfair Display',serif;">{{ $averageDonorDistance }} km</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;">Closest</div>
+                <div style="font-size:1.1rem;font-weight:700;color:var(--secondary);font-family:'Playfair Display',serif;">{{ $closestDonor->distance_km }} km</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              @foreach($nearbyDonors as $donor)
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;">
+                  <span style="color:var(--text);">{{ $donor->full_name }} <span style="color:var(--muted);font-size:0.72rem;">({{ $donor->blood_group }})</span></span>
+                  <span style="color:var(--primary);font-weight:500;">{{ $donor->distance_km }} km</span>
+                </div>
+              @endforeach
+            </div>
+          @endif
         </div>
 
       </div>
@@ -475,6 +615,17 @@ window.addEventListener('DOMContentLoaded', () => {
     urgVals.forEach((v,i) => {
       if(v === selUrgency) urgBtns[i].classList.add(map[v]);
     });
+  }
+});
+
+function toggleNotifDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('notifDropdown').classList.toggle('open');
+}
+document.addEventListener('click', function (e) {
+  var dd = document.getElementById('notifDropdown');
+  if (dd && !dd.contains(e.target) && !e.target.closest('.notif')) {
+    dd.classList.remove('open');
   }
 });
 </script>

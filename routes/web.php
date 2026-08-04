@@ -12,6 +12,12 @@ use App\Http\Controllers\Admin\DonorController    as AdminDonorController;
 use App\Http\Controllers\Admin\HospitalController as AdminHospitalController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\AiPredictionController as AdminAiPredictionController;
+use App\Http\Controllers\Donor\NotificationController as DonorNotificationController;
+use App\Http\Controllers\Hospital\NotificationController as HospitalNotificationController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\BloodInventoryController as AdminBloodInventoryController;
+use App\Http\Controllers\Donor\AppointmentController as DonorAppointmentController;
+use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Models\Donor;
 use App\Models\Hospital;
 use App\Services\AiEligibilityService;
@@ -46,6 +52,15 @@ Route::prefix('donor')->name('donor.')->group(function () {
 
         Route::get('/requests', [DonorBloodRequestController::class, 'index'])->name('requests.index');
         Route::post('/requests/{bloodRequest}/respond', [DonorBloodRequestController::class, 'respond'])->name('requests.respond');
+
+        Route::get('/notifications', [DonorNotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/read-all', [DonorNotificationController::class, 'markAllRead'])->name('notifications.readAll');
+        Route::post('/notifications/{notification}/read', [DonorNotificationController::class, 'markRead'])->name('notifications.read');
+
+        // Appointments
+        Route::get('/appointments', [DonorAppointmentController::class, 'index'])->name('appointments.index');
+        Route::post('/appointments/{bloodRequest}', [DonorAppointmentController::class, 'store'])->name('appointments.store');
+        Route::post('/appointments/{appointment}/cancel', [DonorAppointmentController::class, 'cancel'])->name('appointments.cancel');
     });
 
 });
@@ -82,6 +97,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // AI prediction audit log
         Route::get('/ai-predictions', [AdminAiPredictionController::class, 'index'])->name('ai-predictions.index');
+
+        // Blood inventory (read-only, cross-hospital)
+        Route::get('/inventory', [AdminBloodInventoryController::class, 'index'])->name('inventory.index');
+
+        // Appointments (read-only, cross-hospital)
+        Route::get('/appointments', [AdminAppointmentController::class, 'index'])->name('appointments.index');
+
+        // Notifications
+        Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/read-all', [AdminNotificationController::class, 'markAllRead'])->name('notifications.readAll');
+        Route::post('/notifications/{notification}/read', [AdminNotificationController::class, 'markRead'])->name('notifications.read');
 
         // Admin profile / settings
         Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('profile.edit');
@@ -136,6 +162,8 @@ use App\Http\Controllers\Hospital\RegisterController   as HospitalRegisterContro
 use App\Http\Controllers\Hospital\DashboardController  as HospitalDashboardController;
 use App\Http\Controllers\Hospital\ProfileController    as HospitalProfileController;
 use App\Http\Controllers\Hospital\BloodRequestController;
+use App\Http\Controllers\Hospital\BloodInventoryController as HospitalBloodInventoryController;
+use App\Http\Controllers\Hospital\AppointmentController as HospitalAppointmentController;
 use App\Http\Controllers\ChatController;
 
 
@@ -168,6 +196,24 @@ Route::prefix('hospital')->name('hospital.')->group(function () {
         Route::get('/requests/{bloodRequest}', [BloodRequestController::class, 'show'])->name('requests.show');
         Route::post('/requests/{bloodRequest}/fulfill', [BloodRequestController::class, 'fulfill'])->name('requests.fulfill');
         Route::post('/requests/{bloodRequest}/notify/{donor}', [BloodRequestController::class, 'notifyDonor'])->name('requests.notify');
+
+        // Blood inventory
+        Route::get('/inventory',         [HospitalBloodInventoryController::class, 'index'])->name('inventory.index');
+        Route::get('/inventory/history', [HospitalBloodInventoryController::class, 'history'])->name('inventory.history');
+        Route::post('/inventory/{inventory}/add',       [HospitalBloodInventoryController::class, 'addUnits'])->name('inventory.add');
+        Route::post('/inventory/{inventory}/remove',    [HospitalBloodInventoryController::class, 'removeUnits'])->name('inventory.remove');
+        Route::post('/inventory/{inventory}/threshold', [HospitalBloodInventoryController::class, 'updateThreshold'])->name('inventory.threshold');
+
+        Route::get('/notifications', [HospitalNotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/read-all', [HospitalNotificationController::class, 'markAllRead'])->name('notifications.readAll');
+        Route::post('/notifications/{notification}/read', [HospitalNotificationController::class, 'markRead'])->name('notifications.read');
+
+        // Appointments
+        Route::get('/appointments', [HospitalAppointmentController::class, 'index'])->name('appointments.index');
+        Route::post('/appointments/{appointment}/approve', [HospitalAppointmentController::class, 'approve'])->name('appointments.approve');
+        Route::post('/appointments/{appointment}/reject', [HospitalAppointmentController::class, 'reject'])->name('appointments.reject');
+        Route::post('/appointments/{appointment}/reschedule', [HospitalAppointmentController::class, 'reschedule'])->name('appointments.reschedule');
+        Route::post('/appointments/{appointment}/complete', [HospitalAppointmentController::class, 'complete'])->name('appointments.complete');
     });
 
 });

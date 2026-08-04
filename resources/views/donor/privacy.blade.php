@@ -1,14 +1,14 @@
 
 <style>
     :root {
-        --red: #C0392B;
-        --red-dark: #96281B;
-        --red-light: #E74C3C;
+        --primary: #1D4ED8;
+        --primary-dark: #1E3A8A;
+        --primary-light: #3B82F6;
         --white: #FFFFFF;
-        --off-white: #FDF8F8;
-        --gray-light: #F5F0F0;
+        --off-white: #F8FAFC;
+        --gray-light: #F1F5F9;
         --gray: #888;
-        --text: #1A1A1A;
+        --text: #1E293B;
         --text-soft: #555;
     }
 
@@ -22,7 +22,7 @@
 
     /* ── Hero ── */
     .privacy-hero {
-        background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 60%, #8B0000 100%);
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, #172554 100%);
         padding: 80px 20px 60px;
         text-align: center;
         position: relative;
@@ -109,13 +109,13 @@
 
     .toc-card {
         background: #fff;
-        border: 1px solid #E8DEDE;
+        border: 1px solid #E2E8F0;
         border-radius: 12px;
         overflow: hidden;
     }
 
     .toc-card .toc-head {
-        background: var(--red);
+        background: var(--primary);
         color: #fff;
         padding: 14px 18px;
         font-size: 0.78rem;
@@ -143,9 +143,9 @@
 
     .toc-card ul li a:hover,
     .toc-card ul li a.active {
-        color: var(--red);
-        border-left-color: var(--red);
-        background: #FEF5F5;
+        color: var(--primary);
+        border-left-color: var(--primary);
+        background: #EFF6FF;
     }
 
     /* ── Content ── */
@@ -160,13 +160,13 @@
         gap: 14px;
         margin-bottom: 20px;
         padding-bottom: 14px;
-        border-bottom: 2px solid #EDE0E0;
+        border-bottom: 2px solid #E2E8F0;
     }
 
     .section-icon {
         width: 42px;
         height: 42px;
-        background: linear-gradient(135deg, var(--red), var(--red-light));
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -184,7 +184,7 @@
 
     .section-num {
         font-size: 0.72rem;
-        color: var(--red);
+        color: var(--primary);
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -210,7 +210,7 @@
         color: var(--text-soft);
         font-size: 0.95rem;
         line-height: 1.6;
-        border-bottom: 1px dashed #EDE0E0;
+        border-bottom: 1px dashed #E2E8F0;
     }
 
     .privacy-content ul li:last-child { border-bottom: none; }
@@ -219,16 +219,16 @@
         content: '▸';
         position: absolute;
         left: 0;
-        color: var(--red);
+        color: var(--primary);
         font-size: 0.75rem;
         top: 9px;
     }
 
     /* Highlight box */
     .highlight-box {
-        background: linear-gradient(135deg, #FEF5F5, #FFF8F8);
-        border: 1px solid #F0DADA;
-        border-left: 4px solid var(--red);
+        background: linear-gradient(135deg, #EFF6FF, #F8FAFC);
+        border: 1px solid rgba(29,78,216,0.15);
+        border-left: 4px solid var(--primary);
         border-radius: 8px;
         padding: 18px 20px;
         margin: 20px 0;
@@ -240,7 +240,7 @@
         color: var(--text);
     }
 
-    .highlight-box strong { color: var(--red); }
+    .highlight-box strong { color: var(--primary); }
 
     /* Data table */
     .data-table {
@@ -251,7 +251,7 @@
     }
 
     .data-table th {
-        background: var(--red);
+        background: var(--primary);
         color: #fff;
         padding: 11px 16px;
         text-align: left;
@@ -261,12 +261,12 @@
 
     .data-table td {
         padding: 11px 16px;
-        border-bottom: 1px solid #EDE0E0;
+        border-bottom: 1px solid #E2E8F0;
         color: var(--text-soft);
         vertical-align: top;
     }
 
-    .data-table tr:nth-child(even) td { background: #FDF8F8; }
+    .data-table tr:nth-child(even) td { background: #F8FAFC; }
     .data-table tr:last-child td { border-bottom: none; }
 
     /* Rights grid */
@@ -279,7 +279,7 @@
 
     .right-card {
         background: #fff;
-        border: 1px solid #EDE0E0;
+        border: 1px solid #E2E8F0;
         border-radius: 10px;
         padding: 18px;
         text-align: center;
@@ -288,7 +288,7 @@
 
     .right-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(192,57,43,0.1);
+        box-shadow: 0 8px 24px rgba(29,78,216,0.1);
     }
 
     .right-card .icon {
@@ -312,7 +312,7 @@
 
     /* Contact card */
     .contact-card {
-        background: linear-gradient(135deg, var(--red-dark), var(--red));
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
         border-radius: 14px;
         padding: 30px;
         color: #fff;
@@ -349,7 +349,7 @@
     .contact-card a {
         display: inline-block;
         background: #fff;
-        color: var(--red);
+        color: var(--primary);
         padding: 8px 20px;
         border-radius: 6px;
         font-weight: 700;
@@ -365,14 +365,14 @@
         text-align: center;
         margin-top: 40px;
         padding-top: 30px;
-        border-top: 1px solid #EDE0E0;
+        border-top: 1px solid #E2E8F0;
     }
 
     .back-top a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        color: var(--red);
+        color: var(--primary);
         text-decoration: none;
         font-size: 0.88rem;
         font-weight: 600;

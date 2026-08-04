@@ -3,13 +3,21 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\BloodRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Appointment;
+use App\Models\BloodInventory;
 use App\Models\Donor;
+use App\Models\Hospital;
+use App\Services\DistanceService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
+    public function __construct(private DistanceService $distanceService)
+    {
+    }
+
       public function index()
     {
         $stats = [
@@ -237,6 +245,91 @@ if ($aiAvailable) {
     }
 }
 
+        // ── BLOOD INVENTORY SUMMARY (real stock, not AI-predicted) ──
+        // Distinct from $shortageAlerts above: that section measures donor
+        // *supply* (how many eligible donors exist); this measures actual
+        // *recorded stock* hospitals have on hand right now.
+        $allInventory = BloodInventory::with('hospital')->get();
+        $inventoryTotalUnits = (int) $allInventory->sum('available_units');
+        $inventoryAlerts = $allInventory->filter(fn ($i) => $i->status() !== 'sufficient')
+            ->sortBy(fn ($i) => $i->status() === 'critical' ? 0 : 1)
+            ->values();
+        $inventoryLowStockHospitalCount = $inventoryAlerts->pluck('hospital_id')->unique()->count();
+        $inventoryCriticalGroups = $inventoryAlerts->filter(fn ($i) => $i->status() === 'critical')
+            ->pluck('blood_group')->unique()->values();
+
+        // ── DONOR GEOGRAPHIC DISTRIBUTION ──
+        // Aggregate only -- no individual donor's exact coordinates are
+        // exposed here (that stays hospital-only, on the Matched Donors
+        // page). "Average donor distance to hospitals" = for each hospital
+        // with a location set, the average distance to every located
+        // eligible donor; then averaged again across hospitals.
+        $donorsWithLocation = Donor::whereNotNull('latitude')->whereNotNull('longitude')->get();
+        $hospitalsWithLocation = Hospital::whereNotNull('latitude')->whereNotNull('longitude')->get();
+
+        $geoDistribution = [
+            'donors_with_location'    => $donorsWithLocation->count(),
+            'donors_without_location' => Donor::whereNull('latitude')->orWhereNull('longitude')->count(),
+            'hospitals_with_location' => $hospitalsWithLocation->count(),
+            'by_district'             => Donor::whereNotNull('latitude')
+                ->select('district')
+                ->selectRaw('count(*) as total')
+                ->groupBy('district')
+                ->orderByDesc('total')
+                ->limit(5)
+                ->pluck('total', 'district'),
+        ];
+
+        $averageDonorDistanceToHospitals = null;
+        if ($hospitalsWithLocation->isNotEmpty() && $donorsWithLocation->isNotEmpty()) {
+            $eligibleDonorsWithLocation = $donorsWithLocation->where('is_eligible', true);
+
+            $perHospitalAverages = $hospitalsWithLocation->map(function (Hospital $hospital) use ($eligibleDonorsWithLocation) {
+                if ($eligibleDonorsWithLocation->isEmpty()) {
+                    return null;
+                }
+
+                $distances = $eligibleDonorsWithLocation->map(fn (Donor $donor) => $this->distanceService->calculate(
+                    $hospital->latitude, $hospital->longitude, $donor->latitude, $donor->longitude
+                ));
+
+                return $distances->avg();
+            })->filter(fn ($avg) => $avg !== null);
+
+            if ($perHospitalAverages->isNotEmpty()) {
+                $averageDonorDistanceToHospitals = round($perHospitalAverages->avg(), 1);
+            }
+        }
+
+        // Hospital map markers only -- individual donor coordinates are
+        // never sent to the admin dashboard, even anonymised, since admins
+        // are limited to aggregated donor statistics (see $geoDistribution
+        // above), not per-donor location data.
+        $hospitalMapMarkers = $hospitalsWithLocation
+            ->map(fn (Hospital $h) => ['lat' => $h->latitude, 'lng' => $h->longitude, 'name' => $h->name])
+            ->values();
+
+        // ── APPOINTMENT STATISTICS (read-only summary; full breakdown lives
+        // on the dedicated Appointments page) ──
+        $appointmentStats = [
+            'total'     => Appointment::count(),
+            'completed' => Appointment::where('status', 'completed')->count(),
+            'pending'   => Appointment::where('status', 'pending')->count(),
+            'cancelled' => Appointment::whereIn('status', ['cancelled', 'rejected'])->count(),
+        ];
+        $appointmentMonthlyChart = collect(range(5, 0))->map(function ($monthsAgo) {
+            $month = now()->subMonths($monthsAgo);
+            return [
+                'label' => $month->format('M Y'),
+                'total' => Appointment::whereYear('appointment_date', $month->year)
+                    ->whereMonth('appointment_date', $month->month)->count(),
+            ];
+        })->values();
+
+        $admin = auth('admin')->user();
+        $notifications = $admin->notifications()->take(8)->get();
+        $unreadNotifications = $admin->unreadNotificationsCount();
+
         return view('admin.dashboard', compact(
             'stats',
             'recent_donors',
@@ -244,7 +337,18 @@ if ($aiAvailable) {
             'aiUsed',
             'demandForecasts',
             'clusterResult',
-            'modelMetrics'
+            'modelMetrics',
+            'notifications',
+            'unreadNotifications',
+            'inventoryTotalUnits',
+            'inventoryAlerts',
+            'inventoryLowStockHospitalCount',
+            'inventoryCriticalGroups',
+            'geoDistribution',
+            'averageDonorDistanceToHospitals',
+            'hospitalMapMarkers',
+            'appointmentStats',
+            'appointmentMonthlyChart'
         ));
     }
 

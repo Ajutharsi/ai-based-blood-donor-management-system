@@ -18,7 +18,7 @@ class Donor extends Authenticatable
         'phone', 'date_of_birth', 'age', 'gender', 'nic',
         'blood_group', 'weight_kg', 'hemoglobin',
         'total_donations', 'last_donation_date',
-        'city', 'district', 'donation_center',
+        'city', 'district', 'latitude', 'longitude', 'donation_center',
         'profile_image', 'medical_condition',
         'medical_notes', 'is_eligible', 'ai_confidence','response_probability',
         'response_level', 'is_anomaly',  'anomaly_score','last_ai_check',
@@ -33,7 +33,14 @@ class Donor extends Authenticatable
             'date_of_birth' => 'date',
             'last_donation_date' => 'date',
             'is_eligible' => 'boolean',
+            'latitude' => 'float',
+            'longitude' => 'float',
         ];
+    }
+
+    public function hasLocation(): bool
+    {
+        return $this->latitude !== null && $this->longitude !== null;
     }
 
     // Full name helper
@@ -50,5 +57,20 @@ class Donor extends Authenticatable
     public function responses(): HasMany
     {
         return $this->hasMany(DonorResponse::class);
+    }
+
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class)->latest('appointment_date');
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'user_id')->where('user_type', 'donor')->latest();
+    }
+
+    public function unreadNotificationsCount(): int
+    {
+        return $this->notifications()->whereNull('read_at')->count();
     }
 }

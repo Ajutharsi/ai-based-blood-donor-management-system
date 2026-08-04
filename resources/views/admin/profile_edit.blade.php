@@ -2,17 +2,20 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;--primary-mid:#60A5FA;
+    --secondary:#0D9488;--secondary-dark:#115E59;--secondary-light:#F0FDFA;--secondary-b:#99F6E4;
+    --accent:#06B6D4;--accent-light:#ECFEFF;--accent-b:#A5F3FC;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
+    --warning:#D97706;--warning-dark:#92400E;--warning-light:#FFFBEB;--warning-b:#FDE68A;
     --sb:68px;
   }
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
 
   /* SIDEBAR */
-  .sidebar{width:var(--sb);background:var(--red-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+  .sidebar{width:var(--sb);background:var(--primary-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
   .sb-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;}
   .sb-logo svg{width:18px;height:18px;fill:white;}
   .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;width:100%;align-items:center;}
@@ -35,7 +38,7 @@
   .topbar-label{font-size:0.7rem;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;}
   .topbar-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.1;}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;max-width:640px;}
@@ -52,17 +55,17 @@
   .field{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem;}
   .field label{font-size:0.78rem;font-weight:500;color:var(--text);}
   .field input{font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:0.6rem 0.75rem;border:1px solid var(--gray-b);border-radius:8px;background:var(--off);color:var(--text);}
-  .field input:focus{outline:none;border-color:var(--red);background:white;}
-  .field input.is-invalid{border-color:var(--red);}
-  .error-msg{font-size:0.72rem;color:var(--red);}
+  .field input:focus{outline:none;border-color:var(--primary);background:white;}
+  .field input.is-invalid{border-color:var(--warning);}
+  .error-msg{font-size:0.72rem;color:var(--warning-dark);}
   .hint{font-size:0.72rem;color:var(--muted);}
   .section-divider{border-top:1px solid var(--border);margin:0.5rem 0 1rem;padding-top:1rem;font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
 
   .actions{display:flex;gap:10px;margin-top:1.5rem;}
-  .btn-save{padding:0.7rem 1.5rem;border:none;border-radius:8px;background:var(--red);color:white;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;}
-  .btn-save:hover{background:var(--red-dark);}
+  .btn-save{padding:0.7rem 1.5rem;border:none;border-radius:8px;background:var(--primary);color:white;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;}
+  .btn-save:hover{background:var(--primary-dark);}
   .btn-cancel{padding:0.7rem 1.5rem;border:1px solid var(--gray-b);border-radius:8px;background:white;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.85rem;text-decoration:none;display:flex;align-items:center;}
-  .btn-cancel:hover{border-color:var(--red);color:var(--red);}
+  .btn-cancel:hover{border-color:var(--primary);color:var(--primary);}
 </style>
 
 {{-- SIDEBAR --}}
@@ -86,6 +89,14 @@
     <a href="{{ route('admin.ai-predictions.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
       <span class="sb-tooltip">AI Predictions</span>
+    </a>
+    <a href="{{ route('admin.inventory.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+      <span class="sb-tooltip">Blood Inventory</span>
+    </a>
+    <a href="{{ route('admin.appointments.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tooltip">Appointments</span>
     </a>
     <a href="{{ route('admin.profile.edit') }}" class="sb-item active">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>

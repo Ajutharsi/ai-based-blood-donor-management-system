@@ -2,9 +2,11 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;--primary-mid:#60A5FA;
+    --secondary:#0D9488;--secondary-dark:#115E59;--secondary-light:#F0FDFA;--secondary-b:#99F6E4;
+    --warning:#D97706;--warning-dark:#92400E;--warning-light:#FFFBEB;--warning-b:#FDE68A;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
     --amber:#D97706;--amber-bg:#FFFBEB;--amber-b:#FDE68A;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
@@ -13,7 +15,7 @@
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
 
   /* SIDEBAR (same as donor dashboard) */
-  .sidebar{width:var(--sb);background:var(--red-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+  .sidebar{width:var(--sb);background:var(--primary-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
   .sb-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;}
   .sb-logo svg{width:18px;height:18px;fill:white;}
   .sb-nav{display:flex;flex-direction:column;gap:4px;align-items:center;flex:1;width:100%;}
@@ -22,7 +24,7 @@
   .sb-item:hover svg{stroke:rgba(255,255,255,0.75);}
   .sb-item.active{background:rgba(255,255,255,0.15);}
   .sb-item.active svg{stroke:white;}
-  .sb-tip{position:absolute;left:54px;background:#1A0A0B;color:white;font-size:0.72rem;padding:4px 10px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:99;}
+  .sb-tip{position:absolute;left:54px;background:#1E293B;color:white;font-size:0.72rem;padding:4px 10px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:99;}
   .sb-item:hover .sb-tip{opacity:1;}
   .sb-bot{margin-top:auto;padding-bottom:0.5rem;}
   .sb-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:500;color:white;}
@@ -37,7 +39,7 @@
   .tb-sub{font-size:0.75rem;color:var(--muted);}
   .tb-right{display:flex;align-items:center;gap:10px;}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;max-width:900px;}
@@ -47,7 +49,7 @@
   .req-list{display:flex;flex-direction:column;gap:12px;}
   .req-card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;}
   .req-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:0.85rem;}
-  .req-blood{width:52px;height:52px;border-radius:12px;background:var(--red-light);color:var(--red-dark);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;flex-shrink:0;}
+  .req-blood{width:52px;height:52px;border-radius:12px;background:var(--primary-light);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;flex-shrink:0;}
   .req-info{flex:1;}
   .req-hosp{font-size:0.95rem;font-weight:600;color:var(--text);}
   .req-meta{font-size:0.78rem;color:var(--muted);margin-top:2px;}
@@ -55,7 +57,7 @@
   .badge{display:inline-block;font-size:0.68rem;font-weight:500;padding:3px 9px;border-radius:20px;}
   .b-std{background:var(--gray);color:var(--muted);}
   .b-urg{background:var(--amber-bg);color:var(--amber);}
-  .b-crit{background:var(--red-light);color:var(--red-dark);}
+  .b-crit{background:var(--warning);color:white;}
   .b-district{background:var(--blue-bg);color:var(--blue);}
   .req-notes{font-size:0.8rem;color:var(--muted);line-height:1.5;margin:0.85rem 0;padding:0.75rem;background:var(--off);border-radius:8px;}
 
@@ -63,7 +65,7 @@
   .respond-btn{flex:1;padding:0.6rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;border:1px solid var(--gray-b);background:white;color:var(--muted);transition:all 0.18s;}
   .respond-btn.yes{background:var(--green);color:white;border-color:var(--green);}
   .respond-btn.yes:hover{background:#15803D;}
-  .respond-btn.no:hover{border-color:var(--red);color:var(--red);}
+  .respond-btn.no:hover{border-color:var(--warning);color:var(--warning);}
 
   .status-note{display:flex;align-items:center;gap:8px;padding:0.65rem 0.9rem;border-radius:8px;font-size:0.82rem;margin-top:0.5rem;}
   .status-available{background:var(--green-bg);color:var(--green);}
@@ -90,6 +92,10 @@
     <a href="{{ route('donor.requests.index') }}" class="sb-item active">
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
       <span class="sb-tip">Blood Requests</span>
+    </a>
+    <a href="{{ route('donor.appointments.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tip">Appointments</span>
     </a>
     <a href="{{ route('donor.dashboard') }}#donation-history" class="sb-item">
       <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>

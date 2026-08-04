@@ -30,6 +30,8 @@ class UpdateProfileRequest extends FormRequest
             'hemoglobin'           => 'nullable|numeric|min:5|max:25',
             'city'                 => 'nullable|string|max:100',
             'district'             => 'nullable|string|max:100',
+            'latitude'             => 'nullable|numeric|between:-90,90',
+            'longitude'            => 'nullable|numeric|between:-180,180',
             'donation_center'      => 'nullable|string|max:150',
             'medical_condition'    => 'nullable|in:Diabetes (controlled),Hypertension (controlled),Asthma,Other',
             'medical_notes'        => 'nullable|string|max:1000',

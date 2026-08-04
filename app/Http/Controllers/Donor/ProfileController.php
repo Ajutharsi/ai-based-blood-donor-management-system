@@ -52,6 +52,8 @@ class ProfileController extends Controller
             'hemoglobin'         => $request->hemoglobin,
             'city'               => $request->city,
             'district'           => $request->district,
+            'latitude'           => $request->latitude,
+            'longitude'          => $request->longitude,
             'donation_center'    => $request->donation_center,
             'medical_condition'  => $request->medical_condition,
             'medical_notes'      => $request->medical_notes,

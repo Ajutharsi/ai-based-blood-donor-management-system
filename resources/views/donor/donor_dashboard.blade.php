@@ -2,9 +2,11 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;--primary-mid:#60A5FA;
+    --secondary:#0D9488;--secondary-dark:#115E59;--secondary-light:#F0FDFA;--secondary-b:#99F6E4;
+    --warning:#D97706;--warning-dark:#92400E;--warning-light:#FFFBEB;--warning-b:#FDE68A;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
     --amber:#D97706;--amber-bg:#FFFBEB;--amber-b:#FDE68A;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
@@ -13,7 +15,7 @@
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
 
   /* SIDEBAR */
-  .sidebar{width:var(--sb);background:var(--red-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+  .sidebar{width:var(--sb);background:var(--primary-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
   .sb-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;}
   .sb-logo svg{width:18px;height:18px;fill:white;}
   .sb-nav{display:flex;flex-direction:column;gap:4px;align-items:center;flex:1;width:100%;}
@@ -22,7 +24,7 @@
   .sb-item:hover svg{stroke:rgba(255,255,255,0.75);}
   .sb-item.active{background:rgba(255,255,255,0.15);}
   .sb-item.active svg{stroke:white;}
-  .sb-tip{position:absolute;left:54px;background:#1A0A0B;color:white;font-size:0.72rem;padding:4px 10px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:99;}
+  .sb-tip{position:absolute;left:54px;background:#1E293B;color:white;font-size:0.72rem;padding:4px 10px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:99;}
   .sb-item:hover .sb-tip{opacity:1;}
   .sb-bot{margin-top:auto;padding-bottom:0.5rem;}
   .sb-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:500;color:white;cursor:pointer;}
@@ -39,12 +41,30 @@
   .tb-right{display:flex;align-items:center;gap:10px;}
   .notif{width:36px;height:36px;border-radius:8px;background:var(--gray);border:1px solid var(--gray-b);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;}
   .notif svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.75;}
-  .ndot{position:absolute;top:7px;right:8px;width:5px;height:5px;border-radius:50%;background:var(--red);border:1px solid white;}
-  .donor-pill{display:flex;align-items:center;gap:8px;background:var(--red-light);border:1px solid var(--border);border-radius:20px;padding:0.3rem 0.9rem 0.3rem 0.5rem;}
-  .dp-av{width:24px;height:24px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;color:white;}
-  .dp-name{font-size:0.78rem;font-weight:500;color:var(--red-dark);}
+  .ndot{position:absolute;top:7px;right:8px;width:5px;height:5px;border-radius:50%;background:var(--primary);border:1px solid white;}
+  .notif-wrap{position:relative;}
+  .notif-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:var(--primary);color:#fff;font-size:0.6rem;font-weight:600;display:flex;align-items:center;justify-content:center;line-height:1;}
+  .notif-dropdown{position:absolute;top:46px;right:0;width:340px;max-height:420px;overflow-y:auto;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,0.14);z-index:200;display:none;}
+  .notif-dropdown.open{display:block;}
+  .notif-dd-head{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid var(--border);}
+  .notif-dd-title{font-size:0.82rem;font-weight:600;color:var(--text);}
+  .notif-dd-markall{font-size:0.7rem;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;}
+  .notif-dd-item{display:block;width:100%;text-align:left;background:none;border:none;padding:0.75rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;font-family:inherit;}
+  .notif-dd-item:last-child{border-bottom:none;}
+  .notif-dd-item:hover{background:var(--off);}
+  .notif-dd-item.unread{background:var(--primary-light);}
+  .notif-dd-row{display:flex;gap:8px;align-items:flex-start;}
+  .notif-dd-text{font-size:0.78rem;color:var(--text);line-height:1.45;}
+  .notif-dd-text strong{font-weight:600;}
+  .notif-dd-time{font-size:0.66rem;color:var(--muted);margin-top:3px;}
+  .notif-dd-empty{padding:2rem 1rem;text-align:center;font-size:0.8rem;color:var(--muted);}
+  .notif-dd-foot{padding:0.6rem 1rem;text-align:center;border-top:1px solid var(--border);}
+  .notif-dd-foot a{font-size:0.75rem;color:var(--primary);text-decoration:none;font-weight:500;}
+  .donor-pill{display:flex;align-items:center;gap:8px;background:var(--primary-light);border:1px solid var(--border);border-radius:20px;padding:0.3rem 0.9rem 0.3rem 0.5rem;}
+  .dp-av{width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;color:white;}
+  .dp-name{font-size:0.78rem;font-weight:500;color:var(--primary-dark);}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;}
@@ -54,8 +74,8 @@
 
   /* HERO ELIGIBILITY BANNER */
   .elig-banner{border-radius:16px;padding:1.75rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;position:relative;overflow:hidden;}
-  .eb-eligible{background:var(--red-dark);}
-  .eb-not{background:#7F1D1D;}
+  .eb-eligible{background:var(--secondary-dark);}
+  .eb-not{background:var(--warning-dark);}
   .eb-bg{position:absolute;inset:0;pointer-events:none;}
   .ebc{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,0.07);}
   .ebc1{width:300px;height:300px;top:-100px;right:-60px;}
@@ -77,7 +97,7 @@
   .sc{background:white;border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;}
   .sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem;}
   .sc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
-  .ic-r{background:var(--red-light);} .ic-r svg{stroke:var(--red);}
+  .ic-r{background:var(--secondary-light);} .ic-r svg{stroke:var(--secondary);}
   .ic-g{background:var(--green-bg);} .ic-g svg{stroke:var(--green);}
   .ic-b{background:var(--blue-bg);} .ic-b svg{stroke:var(--blue);}
   .ic-a{background:var(--amber-bg);} .ic-a svg{stroke:var(--amber);}
@@ -85,7 +105,7 @@
   .sc-badge{font-size:0.67rem;font-weight:500;padding:2px 7px;border-radius:20px;}
   .sb-g{background:var(--green-bg);color:var(--green);}
   .sb-a{background:var(--amber-bg);color:var(--amber);}
-  .sb-r{background:var(--red-light);color:var(--red-dark);}
+  .sb-r{background:var(--warning-light);color:var(--warning-dark);}
   .sb-b{background:var(--blue-bg);color:var(--blue);}
   .sc-num{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:2px;}
   .sc-label{font-size:0.73rem;color:var(--muted);}
@@ -96,9 +116,10 @@
   /* CARD */
   .card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;}
   .card-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;}
+  .card-action{font-size:0.75rem;color:var(--primary);text-decoration:none;font-weight:500;}
   .card-t{font-size:0.9rem;font-weight:500;color:var(--text);}
   .card-s{font-size:0.72rem;color:var(--muted);margin-top:2px;}
-  .card-act{font-size:0.75rem;color:var(--red);cursor:pointer;text-decoration:none;}
+  .card-act{font-size:0.75rem;color:var(--primary);cursor:pointer;text-decoration:none;}
 
   /* AI BREAKDOWN */
   .ai-breakdown{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.25rem;}
@@ -108,10 +129,10 @@
   .am-bar{background:var(--gray);border-radius:4px;height:5px;overflow:hidden;}
   .am-fill{height:5px;border-radius:4px;}
   .fill-g{background:var(--green);}
-  .fill-r{background:var(--red);}
+  .fill-r{background:var(--warning);}
   .am-status{font-size:0.65rem;font-weight:500;margin-top:6px;}
   .st-ok{color:var(--green);}
-  .st-warn{color:var(--red);}
+  .st-warn{color:var(--warning);}
 
   /* COOLDOWN */
   .cooldown-wrap{background:var(--gray);border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;}
@@ -119,15 +140,15 @@
   .cd-label{font-size:0.78rem;font-weight:500;color:var(--text);}
   .cd-days{font-size:0.78rem;font-weight:500;}
   .cd-track{background:white;border-radius:6px;height:10px;overflow:hidden;margin-bottom:6px;}
-  .cd-fill{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--red),#E8303F);}
+  .cd-fill{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--primary),var(--primary-mid));}
   .cd-marks{display:flex;justify-content:space-between;font-size:0.67rem;color:var(--muted);}
 
   /* HISTORY */
   .hist-list{display:flex;flex-direction:column;gap:0;}
-  .hist-item{display:flex;align-items:center;gap:12px;padding:0.85rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .hist-item{display:flex;align-items:center;gap:12px;padding:0.85rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .hist-item:last-child{border-bottom:none;}
-  .hist-icon{width:36px;height:36px;border-radius:9px;background:var(--red-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .hist-icon svg{width:16px;height:16px;stroke:var(--red);fill:none;stroke-width:1.75;}
+  .hist-icon{width:36px;height:36px;border-radius:9px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .hist-icon svg{width:16px;height:16px;stroke:var(--primary);fill:none;stroke-width:1.75;}
   .hist-info{flex:1;}
   .hist-t{font-size:0.85rem;font-weight:400;color:var(--text);}
   .hist-s{font-size:0.7rem;color:var(--muted);margin-top:1px;}
@@ -135,35 +156,35 @@
   .hist-date{font-size:0.72rem;color:var(--muted);}
   .badge{display:inline-block;font-size:0.67rem;font-weight:500;padding:2px 8px;border-radius:20px;margin-top:3px;}
   .b-ok{background:var(--green-bg);color:var(--green);}
-  .b-no{background:var(--red-light);color:var(--red-dark);}
+  .b-no{background:var(--warning-light);color:var(--warning-dark);}
 
   /* RIGHT COL */
   .right-col{display:flex;flex-direction:column;gap:14px;}
 
   /* PROFILE CARD */
   .profile-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-  .pc-top{background:var(--red-dark);padding:1.5rem;text-align:center;position:relative;}
+  .pc-top{background:var(--primary-dark);padding:1.5rem;text-align:center;position:relative;}
   .pc-circles{position:absolute;inset:0;pointer-events:none;}
   .pcc{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,0.08);}
   .pcc1{width:150px;height:150px;top:-40px;right:-30px;}
   .pcc2{width:100px;height:100px;bottom:-20px;left:-20px;}
   .pc-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:white;margin:0 auto 0.75rem;position:relative;z-index:2;}
   .pc-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:white;position:relative;z-index:2;}
-  .pc-blood{display:inline-block;background:var(--red);color:white;font-size:0.75rem;font-weight:600;padding:3px 12px;border-radius:20px;margin-top:6px;position:relative;z-index:2;}
+  .pc-blood{display:inline-block;background:var(--primary);color:white;font-size:0.75rem;font-weight:600;padding:3px 12px;border-radius:20px;margin-top:6px;position:relative;z-index:2;}
   .pc-body{padding:1.1rem 1.25rem;}
-  .pc-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .pc-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .pc-row:last-child{border-bottom:none;}
   .pc-key{font-size:0.75rem;color:var(--muted);}
   .pc-val{font-size:0.8rem;font-weight:500;color:var(--text);}
-  .edit-btn{width:100%;padding:0.65rem;border:1px solid var(--border);border-radius:8px;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--red-dark);cursor:pointer;transition:all 0.2s;margin-top:0.75rem;}
-  .edit-btn:hover{background:var(--red-light);}
+  .edit-btn{width:100%;padding:0.65rem;border:1px solid var(--border);border-radius:8px;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--primary-dark);cursor:pointer;transition:all 0.2s;margin-top:0.75rem;}
+  .edit-btn:hover{background:var(--primary-light);}
 
   /* NOTIFICATIONS */
   .notif-list{display:flex;flex-direction:column;gap:8px;}
   .notif-item{display:flex;gap:10px;padding:0.75rem;border-radius:9px;border:1px solid var(--border);}
   .notif-dot-wrap{padding-top:4px;}
   .n-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .nd-r{background:var(--red);}
+  .nd-r{background:var(--warning);}
   .nd-g{background:var(--green);}
   .nd-b{background:var(--blue);}
   .notif-text{font-size:0.78rem;color:var(--text);line-height:1.5;}
@@ -187,6 +208,10 @@
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
       <span class="sb-tip">Blood Requests</span>
     </a>
+    <a href="{{ route('donor.appointments.index') }}" class="sb-item {{ request()->routeIs('donor.appointments.index') ? 'active' : '' }}">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tip">Appointments</span>
+    </a>
     <a href="{{ route('donor.dashboard') }}#ai-health" class="sb-item">
       <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
       <span class="sb-tip">Eligibility</span>
@@ -195,7 +220,7 @@
       <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       <span class="sb-tip">History</span>
     </a>
-    <a href="{{ route('donor.dashboard') }}#notifications" class="sb-item">
+    <a href="{{ route('donor.notifications.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
       <span class="sb-tip">Notifications</span>
     </a>
@@ -225,8 +250,41 @@
       </div>
     </div>
     <div class="tb-right">
-      <div class="notif">
-        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <div class="notif-wrap">
+        <button type="button" class="notif" onclick="toggleNotifDropdown(event)">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          @if($unreadNotifications > 0)
+            <span class="notif-badge">{{ $unreadNotifications > 9 ? '9+' : $unreadNotifications }}</span>
+          @endif
+        </button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-head">
+            <span class="notif-dd-title">Notifications</span>
+            @if($unreadNotifications > 0)
+              <form method="POST" action="{{ route('donor.notifications.readAll') }}" style="margin:0;">
+                @csrf
+                <button type="submit" class="notif-dd-markall">Mark all read</button>
+              </form>
+            @endif
+          </div>
+          @forelse($notifications as $n)
+            <form method="POST" action="{{ route('donor.notifications.read', $n->id) }}" style="margin:0;">
+              @csrf
+              <button type="submit" class="notif-dd-item {{ $n->read_at ? '' : 'unread' }}">
+                <div class="notif-dd-row">
+                  <div class="n-dot {{ $n->dotClass() }}" style="margin-top:5px;"></div>
+                  <div>
+                    <div class="notif-dd-text"><strong>{{ $n->title }}</strong><br>{{ $n->message }}</div>
+                    <div class="notif-dd-time">{{ $n->created_at->diffForHumans() }}</div>
+                  </div>
+                </div>
+              </button>
+            </form>
+          @empty
+            <div class="notif-dd-empty">No notifications yet.</div>
+          @endforelse
+          <div class="notif-dd-foot"><a href="{{ route('donor.notifications.index') }}">View all →</a></div>
+        </div>
       </div>
       <div class="donor-pill">
         <div class="dp-av" @if($donor->profile_image) style="background-image:url('{{ \Illuminate\Support\Facades\Storage::url($donor->profile_image) }}');background-size:cover;background-position:center;" @endif>
@@ -421,8 +479,8 @@
           </div>
 
           <div style="display:flex;gap:10px;">
-            <div style="flex:1;background:{{ $eligible ? 'var(--green-bg)' : 'var(--red-light)' }};border:1px solid {{ $eligible ? 'var(--green-b)' : 'var(--border)' }};border-radius:9px;padding:0.85rem 1rem;display:flex;align-items:center;gap:8px;">
-              <svg width="16" height="16" fill="none" stroke="{{ $eligible ? 'var(--green)' : 'var(--red)' }}" stroke-width="2" viewBox="0 0 24 24">
+            <div style="flex:1;background:{{ $eligible ? 'var(--green-bg)' : 'var(--warning-light)' }};border:1px solid {{ $eligible ? 'var(--green-b)' : 'var(--border)' }};border-radius:9px;padding:0.85rem 1rem;display:flex;align-items:center;gap:8px;">
+              <svg width="16" height="16" fill="none" stroke="{{ $eligible ? 'var(--green)' : 'var(--warning)' }}" stroke-width="2" viewBox="0 0 24 24">
                 @if($eligible)
                   <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
                 @else
@@ -430,10 +488,10 @@
                 @endif
               </svg>
               <div>
-                <div style="font-size:0.78rem;font-weight:500;color:{{ $eligible ? 'var(--green)' : 'var(--red)' }};">
+                <div style="font-size:0.78rem;font-weight:500;color:{{ $eligible ? 'var(--green)' : 'var(--warning)' }};">
                   {{ $eligible ? 'All criteria met' : 'Criteria not met' }}
                 </div>
-                <div style="font-size:0.7rem;color:{{ $eligible ? '#166534' : 'var(--red-dark)' }};">
+                <div style="font-size:0.7rem;color:{{ $eligible ? '#166534' : 'var(--warning-dark)' }};">
                   {{ $eligible ? 'Ready to donate today' : 'Update your health profile' }}
                 </div>
               </div>
@@ -452,6 +510,36 @@
               </div>
             </div>
           </div>
+        </div>
+
+        {{-- UPCOMING APPOINTMENT --}}
+        <div class="card" id="appointments" style="scroll-margin-top:74px;">
+          <div class="card-hd">
+            <div>
+              <div class="card-t">Upcoming Appointment</div>
+              <div class="card-s">@if($upcomingAppointment) {{ $upcomingAppointment->statusLabel() }} @else No appointment booked @endif</div>
+            </div>
+            <a href="{{ route('donor.appointments.index') }}" class="card-action">Manage appointments →</a>
+          </div>
+          @if($upcomingAppointment)
+            <div class="hist-list">
+              <div class="hist-item">
+                <div class="hist-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                <div class="hist-info">
+                  <div class="hist-t">{{ $upcomingAppointment->hospital?->name ?? 'Hospital' }}</div>
+                  <div class="hist-s">{{ $upcomingAppointment->bloodRequest?->blood_group }} donation</div>
+                </div>
+                <div class="hist-right">
+                  <div class="hist-date">{{ $upcomingAppointment->appointment_date->format('d M Y') }} · {{ $upcomingAppointment->appointment_time }}</div>
+                  <span class="badge {{ $upcomingAppointment->status === 'approved' ? 'b-ok' : '' }}">{{ $upcomingAppointment->statusLabel() }}</span>
+                </div>
+              </div>
+            </div>
+          @else
+            <div class="empty-state">
+              No upcoming appointment. Respond "Available" to a blood request, then book an appointment from the Appointments page.
+            </div>
+          @endif
         </div>
 
         {{-- DONATION HISTORY --}}
@@ -551,32 +639,29 @@
         <div class="card" id="notifications" style="scroll-margin-top:74px;">
           <div class="card-hd">
             <div><div class="card-t">Notifications</div></div>
+            <a href="{{ route('donor.notifications.index') }}" class="card-action">View all →</a>
           </div>
           <div class="notif-list">
-            @if($eligible)
-              <div class="notif-item">
-                <div class="notif-dot-wrap"><div class="n-dot nd-g"></div></div>
+            @forelse($notifications as $n)
+              <form method="POST" action="{{ route('donor.notifications.read', $n->id) }}" style="margin:0;">
+                @csrf
+                <button type="submit" class="notif-item" style="width:100%;text-align:left;background:none;border:1px solid var(--border);cursor:pointer;font-family:inherit;{{ $n->read_at ? 'opacity:0.65;' : '' }}">
+                  <div class="notif-dot-wrap"><div class="n-dot {{ $n->dotClass() }}"></div></div>
+                  <div>
+                    <div class="notif-text"><strong>{{ $n->title }}</strong> — {{ $n->message }}</div>
+                    <div class="notif-time">{{ $n->created_at->diffForHumans() }}</div>
+                  </div>
+                </button>
+              </form>
+            @empty
+              <div class="notif-item" style="opacity:0.65;">
+                <div class="notif-dot-wrap"><div class="n-dot nd-b"></div></div>
                 <div>
-                  <div class="notif-text">You are <strong>eligible to donate</strong>. Your blood type {{ $donor->blood_group }} may be needed.</div>
-                  <div class="notif-time">Based on your health profile</div>
+                  <div class="notif-text">Welcome to <strong>LifeLink</strong>! Your donor profile has been created successfully.</div>
+                  <div class="notif-time">{{ $donorSince }}</div>
                 </div>
               </div>
-            @else
-              <div class="notif-item">
-                <div class="notif-dot-wrap"><div class="n-dot nd-r"></div></div>
-                <div>
-                  <div class="notif-text">You are currently <strong>not eligible</strong>. Please update your health information.</div>
-                  <div class="notif-time">Check eligibility criteria</div>
-                </div>
-              </div>
-            @endif
-            <div class="notif-item" style="opacity:0.65;">
-              <div class="notif-dot-wrap"><div class="n-dot nd-b"></div></div>
-              <div>
-                <div class="notif-text">Welcome to <strong>LifeLink</strong>! Your donor profile has been created successfully.</div>
-                <div class="notif-time">{{ $donorSince }}</div>
-              </div>
-            </div>
+            @endforelse
           </div>
         </div>
 
@@ -587,3 +672,16 @@
 
 {{-- Donor dashboard, Admin dashboard, Hospital dashboard --}}
 @include('components.chatbot')
+
+<script>
+function toggleNotifDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('notifDropdown').classList.toggle('open');
+}
+document.addEventListener('click', function (e) {
+  var dd = document.getElementById('notifDropdown');
+  if (dd && !dd.contains(e.target) && !e.target.closest('.notif')) {
+    dd.classList.remove('open');
+  }
+});
+</script>

@@ -7,6 +7,8 @@ use App\Mail\BloodRequestNotification;
 use App\Models\BloodRequest;
 use App\Models\Donor;
 use App\Models\DonorResponse;
+use App\Models\Notification;
+use App\Services\BloodInventoryService;
 use App\Services\DonorMatchingService;
 use App\Support\BloodCompatibility;
 use Illuminate\Http\Request;
@@ -14,8 +16,10 @@ use Illuminate\Support\Facades\Mail;
 
 class BloodRequestController extends Controller
 {
-    public function __construct(private DonorMatchingService $matchingService)
-    {
+    public function __construct(
+        private DonorMatchingService $matchingService,
+        private BloodInventoryService $inventoryService,
+    ) {
     }
 
     // The request form lives on the hospital dashboard
@@ -50,13 +54,45 @@ class BloodRequestController extends Controller
             'status'       => 'pending',
         ]);
 
+        $this->notifyOnNewRequest($bloodRequest, $hospital);
+
         return $this->renderMatches($bloodRequest, $hospital);
+    }
+
+    // In-app notifications triggered the moment a request is submitted:
+    // the top AI-matched donors are told they're a match, and -- for
+    // critical requests specifically -- every admin gets a shortage alert.
+    // This runs regardless of whether the hospital goes on to use the
+    // explicit "Notify" button on any particular donor.
+    private function notifyOnNewRequest(BloodRequest $bloodRequest, $hospital): void
+    {
+        $topMatches = $this->matchingService->findMatches($bloodRequest, 5);
+
+        foreach ($topMatches as $donor) {
+            Notification::notify(
+                'donor',
+                $donor->id,
+                'You are a match for a blood request',
+                "You are eligible for a blood donation request: {$bloodRequest->blood_group} needed at {$hospital->name}.",
+                'donor_match',
+                $bloodRequest->id
+            );
+        }
+
+        if ($bloodRequest->urgency === 'critical') {
+            Notification::notifyAllAdmins(
+                'Critical blood shortage',
+                "{$hospital->name} urgently needs {$bloodRequest->units_needed} unit(s) of {$bloodRequest->blood_group}.",
+                'shortage_alert',
+                $bloodRequest->id
+            );
+        }
     }
 
     // Revisit an existing request's matched donors later (e.g. to check
     // whether anyone has responded since it was first submitted) rather
     // than only being able to see matches once, immediately after creation.
-    public function show(BloodRequest $bloodRequest)
+    public function show(Request $request, BloodRequest $bloodRequest)
     {
         $hospital = auth('hospital')->user();
 
@@ -64,16 +100,25 @@ class BloodRequestController extends Controller
             abort(403);
         }
 
-        return $this->renderMatches($bloodRequest, $hospital);
+        return $this->renderMatches($bloodRequest, $hospital, $request->get('sort', 'match_score'));
     }
 
-    private function renderMatches(BloodRequest $bloodRequest, $hospital)
+    private function renderMatches(BloodRequest $bloodRequest, $hospital, string $sort = 'match_score')
     {
         // AI-ranked donor matching: blood/Rh compatibility (not just an exact
-        // blood-group match), district proximity, and each donor's existing
-        // AI-computed eligibility confidence and response likelihood, weighted
-        // by this request's urgency. See DonorMatchingService for the scoring.
+        // blood-group match), district proximity, real hospital-to-donor
+        // distance, and each donor's existing AI-computed eligibility
+        // confidence and response likelihood, weighted by this request's
+        // urgency. See DonorMatchingService for the scoring. findMatches()
+        // itself returns match_score-descending; re-sort here only if the
+        // hospital asked for a different view.
         $matched_donors = $this->matchingService->findMatches($bloodRequest, 10);
+
+        $matched_donors = match ($sort) {
+            'distance'   => $matched_donors->sortBy(fn ($d) => $d->distance_km ?? PHP_FLOAT_MAX)->values(),
+            'confidence' => $matched_donors->sortByDesc(fn ($d) => (float) ($d->ai_confidence ?? 0))->values(),
+            default      => $matched_donors,
+        };
 
         // Real donor responses recorded so far for this request (Donor
         // Blood Requests page), keyed by donor_id, so the hospital sees
@@ -87,7 +132,8 @@ class BloodRequestController extends Controller
             'bloodRequest',
             'matched_donors',
             'hospital',
-            'donorResponses'
+            'donorResponses',
+            'sort'
         ));
     }
 
@@ -135,6 +181,15 @@ class BloodRequestController extends Controller
 
         Mail::to($donor->email)->send(new BloodRequestNotification($donor, $bloodRequest, $hospital));
 
+        Notification::notify(
+            'donor',
+            $donor->id,
+            'Blood request',
+            "Emergency blood request: {$bloodRequest->blood_group} needed at {$hospital->name}",
+            'blood_request',
+            $bloodRequest->id
+        );
+
         return back()->with('success', "Notification emailed to {$donor->full_name}.");
     }
 
@@ -146,6 +201,35 @@ class BloodRequestController extends Controller
         }
 
         $bloodRequest->update(['status' => 'fulfilled']);
+
+        $hospital = auth('hospital')->user();
+        $respondedAvailable = DonorResponse::where('blood_request_id', $bloodRequest->id)
+            ->where('status', 'available')
+            ->pluck('donor_id');
+
+        foreach ($respondedAvailable as $donorId) {
+            Notification::notify(
+                'donor',
+                $donorId,
+                'Request fulfilled',
+                "The {$bloodRequest->blood_group} request at {$hospital->name} has been fulfilled. Thank you for responding!",
+                'fulfillment',
+                $bloodRequest->id
+            );
+        }
+
+        // Auto-deduct fulfilled units from recorded stock -- never goes
+        // below zero, and flags it (without blocking the fulfillment) if
+        // recorded stock couldn't fully cover what was needed.
+        $deduction = $this->inventoryService->deductForFulfillment(
+            $hospital->id, $bloodRequest->blood_group, $bloodRequest->units_needed
+        );
+
+        if ($deduction['tracked'] && !$deduction['fully_covered']) {
+            return back()->with('success', 'Blood request marked as fulfilled.')
+                ->with('warning', "Recorded {$bloodRequest->blood_group} stock only covered {$deduction['removed']} of the {$bloodRequest->units_needed} unit(s) needed -- inventory is now at 0. Please update stock manually if more was actually used.");
+        }
+
         return back()->with('success', 'Blood request marked as fulfilled.');
     }
 }

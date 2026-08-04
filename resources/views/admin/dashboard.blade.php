@@ -2,18 +2,21 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;--primary-mid:#60A5FA;
+    --secondary:#0D9488;--secondary-dark:#115E59;--secondary-light:#F0FDFA;--secondary-b:#99F6E4;
+    --accent:#06B6D4;--accent-light:#ECFEFF;--accent-b:#A5F3FC;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
     --amber:#D97706;--amber-bg:#FFFBEB;
+    --warning:#D97706;--warning-dark:#92400E;--warning-light:#FFFBEB;--warning-b:#FDE68A;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
     --sb:68px;
   }
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
 
   /* SIDEBAR */
-  .sidebar{width:var(--sb);background:var(--red-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+  .sidebar{width:var(--sb);background:var(--primary-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
   .sb-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;}
   .sb-logo svg{width:18px;height:18px;fill:white;}
   .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;width:100%;align-items:center;}
@@ -36,11 +39,35 @@
   .topbar-label{font-size:0.7rem;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;}
   .topbar-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.1;}
   .topbar-right{display:flex;align-items:center;gap:12px;}
-  .admin-pill{display:flex;align-items:center;gap:8px;background:var(--red-light);border:1px solid var(--border);border-radius:20px;padding:0.35rem 0.9rem 0.35rem 0.5rem;}
-  .admin-avatar{width:24px;height:24px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;color:white;}
-  .admin-name{font-size:0.78rem;font-weight:500;color:var(--red-dark);}
+  .notif-wrap{position:relative;}
+  .notif{width:36px;height:36px;border-radius:8px;background:var(--gray);border:1px solid var(--gray-b);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;}
+  .notif svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.75;}
+  .notif-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:var(--primary);color:#fff;font-size:0.6rem;font-weight:600;display:flex;align-items:center;justify-content:center;line-height:1;}
+  .notif-dropdown{position:absolute;top:46px;right:0;width:340px;max-height:420px;overflow-y:auto;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,0.14);z-index:200;display:none;}
+  .notif-dropdown.open{display:block;}
+  .notif-dd-head{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid var(--border);}
+  .notif-dd-title{font-size:0.82rem;font-weight:600;color:var(--text);}
+  .notif-dd-markall{font-size:0.7rem;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;}
+  .notif-dd-item{display:block;width:100%;text-align:left;background:none;border:none;padding:0.75rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;font-family:inherit;}
+  .notif-dd-item:last-child{border-bottom:none;}
+  .notif-dd-item:hover{background:var(--off);}
+  .notif-dd-item.unread{background:var(--primary-light);}
+  .notif-dd-row{display:flex;gap:8px;align-items:flex-start;}
+  .notif-dd-text{font-size:0.78rem;color:var(--text);line-height:1.45;}
+  .notif-dd-text strong{font-weight:600;}
+  .notif-dd-time{font-size:0.66rem;color:var(--muted);margin-top:3px;}
+  .notif-dd-empty{padding:2rem 1rem;text-align:center;font-size:0.8rem;color:var(--muted);}
+  .notif-dd-foot{padding:0.6rem 1rem;text-align:center;border-top:1px solid var(--border);}
+  .notif-dd-foot a{font-size:0.75rem;color:var(--primary);text-decoration:none;font-weight:500;}
+  .n-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .nd-g{background:var(--green, #16A34A);}
+  .nd-b{background:var(--primary);}
+  .nd-r{background:var(--warning, #D97706);}
+  .admin-pill{display:flex;align-items:center;gap:8px;background:var(--primary-light);border:1px solid var(--border);border-radius:20px;padding:0.35rem 0.9rem 0.35rem 0.5rem;}
+  .admin-avatar{width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;color:white;}
+  .admin-name{font-size:0.78rem;font-weight:500;color:var(--primary-dark);}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;}
@@ -53,7 +80,7 @@
   .stat-card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;}
   .stat-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
   .stat-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
-  .si-red{background:var(--red-light);}  .si-red svg{stroke:var(--red);}
+  .si-red{background:var(--secondary-light);}  .si-red svg{stroke:var(--secondary);}
   .si-blue{background:#EFF6FF;}          .si-blue svg{stroke:#2563EB;}
   .si-green{background:#F0FDF4;}         .si-green svg{stroke:#16A34A;}
   .si-amber{background:#FFFBEB;}         .si-amber svg{stroke:#D97706;}
@@ -61,7 +88,7 @@
   .stat-trend{font-size:0.72rem;font-weight:500;padding:3px 8px;border-radius:20px;}
   .trend-up{background:#F0FDF4;color:#16A34A;}
   .trend-neu{background:var(--gray);color:var(--muted);}
-  .trend-down{background:#FFF7ED;color:#C2410C;}
+  .trend-down{background:#FFFBEB;color:#B45309;}
   .stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px;}
   .stat-label{font-size:0.78rem;color:var(--muted);font-weight:300;}
   .stat-sub{font-size:0.7rem;color:var(--muted);margin-top:6px;}
@@ -75,14 +102,14 @@
   .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
   .card-title{font-size:0.9rem;font-weight:500;color:var(--text);}
   .card-sub{font-size:0.72rem;color:var(--muted);margin-top:2px;}
-  .card-action{font-size:0.75rem;color:var(--red);text-decoration:none;}
+  .card-action{font-size:0.75rem;color:var(--primary);text-decoration:none;}
 
   /* BAR CHART */
   .bar-chart{display:flex;flex-direction:column;gap:10px;}
   .bar-row{display:flex;align-items:center;gap:10px;}
   .bar-label{font-size:0.78rem;color:var(--muted);width:32px;flex-shrink:0;}
   .bar-track{flex:1;background:var(--gray);border-radius:4px;height:8px;overflow:hidden;}
-  .bar-fill{height:8px;border-radius:4px;background:var(--red);}
+  .bar-fill{height:8px;border-radius:4px;background:var(--primary);}
   .bar-val{font-size:0.75rem;font-weight:500;color:var(--text);width:34px;text-align:right;flex-shrink:0;}
 
   /* DONUT */
@@ -99,28 +126,28 @@
   thead th{padding:0.6rem 1rem;text-align:left;font-size:0.7rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);background:var(--gray);white-space:nowrap;}
   thead th:first-child{border-radius:8px 0 0 0;}
   thead th:last-child{border-radius:0 8px 0 0;}
-  tbody tr{border-bottom:1px solid rgba(200,25,42,0.06);transition:background 0.15s;}
+  tbody tr{border-bottom:1px solid rgba(29,78,216,0.06);transition:background 0.15s;}
   tbody tr:last-child{border-bottom:none;}
-  tbody tr:hover{background:var(--red-light);}
+  tbody tr:hover{background:var(--primary-light);}
   td{padding:0.75rem 1rem;color:var(--text);vertical-align:middle;}
   .td-name{display:flex;align-items:center;gap:10px;}
-  .td-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:500;flex-shrink:0;background:var(--red-light);color:var(--red-dark);}
+  .td-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:500;flex-shrink:0;background:var(--primary-light);color:var(--primary-dark);}
   .td-name-text{font-weight:400;color:var(--text);}
   .td-name-sub{font-size:0.7rem;color:var(--muted);}
   .badge{display:inline-block;font-size:0.68rem;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;}
   .b-elig{background:#F0FDF4;color:#166534;}
-  .b-not{background:#FFF7ED;color:#C2410C;}
-  .blood-pill{display:inline-block;background:var(--red-light);color:var(--red-dark);font-size:0.72rem;font-weight:500;padding:3px 8px;border-radius:5px;}
+  .b-not{background:#FFFBEB;color:#B45309;}
+  .blood-pill{display:inline-block;background:var(--primary-light);color:var(--primary-dark);font-size:0.72rem;font-weight:500;padding:3px 8px;border-radius:5px;}
 
   /* ACTIVITY */
   .activity-list{display:flex;flex-direction:column;}
-  .act-item{display:flex;gap:12px;padding:0.75rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .act-item{display:flex;gap:12px;padding:0.75rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .act-item:last-child{border-bottom:none;}
   .act-dot-wrap{display:flex;flex-direction:column;align-items:center;padding-top:4px;}
   .act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
   .act-line{flex:1;width:1px;background:var(--border);margin-top:4px;}
   .act-item:last-child .act-line{display:none;}
-  .ad-red{background:var(--red);}
+  .ad-red{background:var(--secondary);}
   .ad-green{background:#16A34A;}
   .ad-blue{background:#2563EB;}
   .act-text{font-size:0.8rem;color:var(--text);line-height:1.5;}
@@ -157,6 +184,14 @@
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
       <span class="sb-tooltip">AI Predictions</span>
     </a>
+    <a href="{{ route('admin.inventory.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+      <span class="sb-tooltip">Blood Inventory</span>
+    </a>
+    <a href="{{ route('admin.appointments.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tooltip">Appointments</span>
+    </a>
     <a href="{{ route('admin.profile.edit') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
       <span class="sb-tooltip">Settings</span>
@@ -179,6 +214,42 @@
       <div class="topbar-title">Dashboard Overview</div>
     </div>
     <div class="topbar-right">
+      <div class="notif-wrap">
+        <button type="button" class="notif" onclick="toggleNotifDropdown(event)">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          @if($unreadNotifications > 0)
+            <span class="notif-badge">{{ $unreadNotifications > 9 ? '9+' : $unreadNotifications }}</span>
+          @endif
+        </button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-head">
+            <span class="notif-dd-title">Notifications</span>
+            @if($unreadNotifications > 0)
+              <form method="POST" action="{{ route('admin.notifications.readAll') }}" style="margin:0;">
+                @csrf
+                <button type="submit" class="notif-dd-markall">Mark all read</button>
+              </form>
+            @endif
+          </div>
+          @forelse($notifications as $n)
+            <form method="POST" action="{{ route('admin.notifications.read', $n->id) }}" style="margin:0;">
+              @csrf
+              <button type="submit" class="notif-dd-item {{ $n->read_at ? '' : 'unread' }}">
+                <div class="notif-dd-row">
+                  <div class="n-dot {{ $n->dotClass() }}" style="margin-top:5px;"></div>
+                  <div>
+                    <div class="notif-dd-text"><strong>{{ $n->title }}</strong><br>{{ $n->message }}</div>
+                    <div class="notif-dd-time">{{ $n->created_at->diffForHumans() }}</div>
+                  </div>
+                </div>
+              </button>
+            </form>
+          @empty
+            <div class="notif-dd-empty">No notifications yet.</div>
+          @endforelse
+          <div class="notif-dd-foot"><a href="{{ route('admin.notifications.index') }}">View all →</a></div>
+        </div>
+      </div>
       <div class="admin-pill">
         <div class="admin-avatar">{{ strtoupper(substr(auth('admin')->user()->name,0,2)) }}</div>
         <span class="admin-name">{{ auth('admin')->user()->name }}</span>
@@ -232,9 +303,9 @@
 
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
     <div style="display:flex;align-items:center;gap:8px;">
-      <div style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 2s infinite;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--warning);animation:pulse 2s infinite;"></div>
       <span style="font-size:0.78rem;font-weight:500;color:var(--text);">Blood Shortage Alerts</span>
-      <span style="font-size:0.7rem;background:var(--red-light);color:var(--red-dark);padding:2px 8px;border-radius:20px;font-weight:500;">
+      <span style="font-size:0.7rem;background:var(--warning-light);color:var(--warning-dark);padding:2px 8px;border-radius:20px;font-weight:500;">
         {{ count($shortageAlerts) }} alert{{ count($shortageAlerts) > 1 ? 's' : '' }}
       </span>
       @if($aiUsed)
@@ -250,11 +321,11 @@
     @foreach($shortageAlerts as $alert)
       @php
         $isCritical = $alert['level'] === 'critical';
-        $bg     = $isCritical ? '#FEF2F2' : '#FFFBEB';
-        $border = $isCritical ? '#FECACA' : '#FDE68A';
-        $color  = $isCritical ? '#991B1B' : '#92400E';
+        $bg     = $isCritical ? '#FEF3C7' : '#FFFBEB';
+        $border = $isCritical ? '#FCD34D' : '#FDE68A';
+        $color  = $isCritical ? '#78350F' : '#92400E';
         $label  = $isCritical ? 'CRITICAL' : 'LOW STOCK';
-        $dotClr = $isCritical ? '#C8192A' : '#D97706';
+        $dotClr = $isCritical ? '#B45309' : '#D97706';
       @endphp
       <div style="background:{{ $bg }};border:1px solid {{ $border }};border-radius:12px;padding:1rem 1.1rem;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.75rem;">
@@ -315,6 +386,193 @@
   </div>
 @endif
 
+{{-- ── BLOOD INVENTORY SUMMARY (real recorded stock, not AI-predicted) ── --}}
+<div style="margin-bottom:1.75rem;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+    <span style="font-size:0.78rem;font-weight:500;color:var(--text);">Blood Inventory</span>
+    <a href="{{ route('admin.inventory.index') }}" class="card-action">View full inventory →</a>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1rem;">
+    <div class="stat-card">
+      <div class="stat-icon si-blue" style="margin-bottom:0.6rem;"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z"/></svg></div>
+      <div class="stat-num">{{ $inventoryTotalUnits }}</div>
+      <div class="stat-label">Total Units (All Hospitals)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-amber" style="margin-bottom:0.6rem;"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="stat-num">{{ $inventoryLowStockHospitalCount }}</div>
+      <div class="stat-label">Hospitals Low/Critical on Stock</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-red" style="margin-bottom:0.6rem;"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div class="stat-num">{{ $inventoryCriticalGroups->count() }}</div>
+      <div class="stat-label">Critical Blood Groups</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-green" style="margin-bottom:0.6rem;"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div class="stat-num">{{ $inventoryAlerts->count() === 0 ? 'All Good' : $inventoryAlerts->count() }}</div>
+      <div class="stat-label">{{ $inventoryAlerts->count() === 0 ? 'No Stock Alerts' : 'Stock Alerts' }}</div>
+    </div>
+  </div>
+
+  @if($inventoryAlerts->isNotEmpty())
+    <div style="background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Hospital</th><th>Blood Group</th><th>Available</th><th>Minimum</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            @foreach($inventoryAlerts->take(8) as $item)
+              <tr>
+                <td><a href="{{ route('admin.hospitals.show', $item->hospital_id) }}" style="color:var(--primary-dark);text-decoration:none;font-weight:500;">{{ $item->hospital?->name ?? 'Deleted hospital' }}</a></td>
+                <td><span class="blood-pill">{{ $item->blood_group }}</span></td>
+                <td>{{ $item->available_units }}</td>
+                <td>{{ $item->minimum_threshold }}</td>
+                <td>
+                  <span class="badge {{ $item->status() === 'critical' ? 'b-not' : 'b-elig' }}" style="{{ $item->status() === 'critical' ? '' : 'background:var(--warning-light);color:var(--warning-dark);' }}">
+                    {{ $item->statusLabel() }}
+                  </span>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  @else
+    <div style="background:var(--green-bg);border:1px solid var(--green-b);border-radius:12px;padding:1rem 1.5rem;display:flex;align-items:center;gap:12px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <div style="font-size:0.85rem;font-weight:500;color:var(--green);">All recorded blood stock is at sufficient levels.</div>
+    </div>
+  @endif
+</div>
+
+{{-- ── DONOR GEOGRAPHIC DISTRIBUTION (aggregate only -- no per-donor
+     detail is shown here; that stays hospital-only on Matched Donors) ── --}}
+<div style="margin-bottom:1.75rem;">
+  <span style="font-size:0.78rem;font-weight:500;color:var(--text);">Donor Geographic Distribution</span>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0.75rem 0 1rem;">
+    <div class="stat-card">
+      <div class="stat-num">{{ $geoDistribution['donors_with_location'] }}</div>
+      <div class="stat-label">Donors With Location Set</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ $geoDistribution['hospitals_with_location'] }}</div>
+      <div class="stat-label">Hospitals With Location Set</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ $averageDonorDistanceToHospitals !== null ? $averageDonorDistanceToHospitals . ' km' : '—' }}</div>
+      <div class="stat-label">Avg. Donor Distance to Hospitals</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ $geoDistribution['by_district']->count() }}</div>
+      <div class="stat-label">Districts Represented (located donors)</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
+    {{-- Hospital locations only -- individual donor coordinates are never
+         shown to admins, even anonymised, per the "admins see aggregated
+         statistics only" security rule. Donor geography is represented
+         above (aggregate counts) and to the right (district breakdown). --}}
+    @if($hospitalMapMarkers->isNotEmpty())
+      <div style="background:white;border:1px solid var(--border);border-radius:14px;padding:1rem;">
+        <div id="geoMap" style="height:300px;border-radius:10px;"></div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:0.6rem;">
+          <span style="color:var(--secondary);">●</span> Hospitals with a location set ({{ $hospitalMapMarkers->count() }})
+        </div>
+      </div>
+
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+      <script>
+      (function () {
+        var hospitals = @json($hospitalMapMarkers);
+        var center = hospitals.length ? [hospitals[0].lat, hospitals[0].lng] : [7.8731, 80.7718];
+
+        var map = L.map('geoMap').setView(center, 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 18,
+        }).addTo(map);
+
+        hospitals.forEach(function (h) {
+          L.circleMarker([h.lat, h.lng], { radius: 7, color: '#0D9488', fillColor: '#0D9488', fillOpacity: 0.8, weight: 2 })
+            .bindPopup(h.name)
+            .addTo(map);
+        });
+
+        if (hospitals.length > 1) {
+          map.fitBounds(hospitals.map(function (p) { return [p.lat, p.lng]; }), { padding: [20, 20] });
+        }
+      })();
+      </script>
+    @else
+      <div style="background:var(--gray);border:1px dashed var(--gray-b);border-radius:14px;padding:2rem;text-align:center;color:var(--muted);font-size:0.82rem;">
+        No hospitals have set a location yet — once they do, they'll appear here on a live map.
+      </div>
+    @endif
+
+    {{-- Donor distribution stays aggregate: top districts by count of
+         located donors, never individual coordinates. --}}
+    <div style="background:white;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;">
+      <div style="font-size:0.78rem;font-weight:500;color:var(--text);margin-bottom:0.75rem;">Top Districts (Located Donors)</div>
+      @forelse($geoDistribution['by_district'] as $district => $count)
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.4rem 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--text);">{{ $district ?? 'Unknown' }}</span>
+          <span style="color:var(--primary);font-weight:600;">{{ $count }}</span>
+        </div>
+      @empty
+        <div style="font-size:0.78rem;color:var(--muted);">No located donors yet.</div>
+      @endforelse
+    </div>
+  </div>
+</div>
+
+{{-- ── APPOINTMENT STATISTICS (read-only summary; full breakdown lives on
+     the dedicated Appointments page) ── --}}
+<div style="margin-bottom:1.75rem;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+    <span style="font-size:0.78rem;font-weight:500;color:var(--text);">Appointment Statistics</span>
+    <a href="{{ route('admin.appointments.index') }}" style="font-size:0.75rem;color:var(--primary);text-decoration:none;font-weight:500;">View all appointments →</a>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1rem;">
+    <div class="stat-card">
+      <div class="stat-num">{{ $appointmentStats['total'] }}</div>
+      <div class="stat-label">Total Appointments</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ $appointmentStats['completed'] }}</div>
+      <div class="stat-label">Completed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ $appointmentStats['pending'] }}</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ $appointmentStats['cancelled'] }}</div>
+      <div class="stat-label">Cancelled/Rejected</div>
+    </div>
+  </div>
+
+  <div style="background:white;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;">
+    @php $maxAptTotal = max(1, $appointmentMonthlyChart->max('total')); @endphp
+    <div style="display:flex;align-items:flex-end;gap:10px;height:120px;">
+      @foreach($appointmentMonthlyChart as $m)
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">
+          <div style="width:60%;border-radius:4px 4px 0 0;background:var(--primary);height:{{ $m['total'] > 0 ? max(6, ($m['total'] / $maxAptTotal) * 90) : 2 }}%;" title="{{ $m['total'] }} appointments"></div>
+          <div style="font-size:0.65rem;color:var(--muted);margin-top:6px;">{{ $m['label'] }}</div>
+        </div>
+      @endforeach
+    </div>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:0.5rem;">Appointments booked per month (last 6 months)</div>
+  </div>
+</div>
+
 
 {{-- ── BLOOD DEMAND FORECASTING ── --}}
 <div style="margin-bottom:1.75rem;">
@@ -332,9 +590,9 @@
     @foreach($demandForecasts as $bg => $forecast)
       @php
         $level  = $forecast['demand_level'];
-        $bg_col = $level === 'high'   ? '#FEF2F2'      : ($level === 'medium' ? '#FFFBEB'      : '#F0FDF4');
-        $border = $level === 'high'   ? '#FECACA'      : ($level === 'medium' ? '#FDE68A'      : '#BBF7D0');
-        $color  = $level === 'high'   ? '#991B1B'      : ($level === 'medium' ? '#92400E'      : '#166534');
+        $bg_col = $level === 'high'   ? '#FEF3C7'      : ($level === 'medium' ? '#FFFBEB'      : '#F0FDF4');
+        $border = $level === 'high'   ? '#FCD34D'      : ($level === 'medium' ? '#FDE68A'      : '#BBF7D0');
+        $color  = $level === 'high'   ? '#78350F'      : ($level === 'medium' ? '#92400E'      : '#166534');
         $label  = $level === 'high'   ? '↑ HIGH'       : ($level === 'medium' ? '→ MEDIUM'     : '↓ LOW');
         $trend  = match($forecast['trend']) {
             'increasing' => '↑ Rising',
@@ -432,10 +690,10 @@
     @foreach($clusterResult['clusters'] as $cluster)
       @php
         $c = $cluster['color'];
-        $bg     = $c==='green' ? '#F0FDF4' : ($c==='blue' ? '#EFF6FF' : ($c==='red' ? '#FEF2F2' : '#FFFBEB'));
-        $border = $c==='green' ? '#BBF7D0' : ($c==='blue' ? '#BFDBFE' : ($c==='red' ? '#FECACA' : '#FDE68A'));
-        $color  = $c==='green' ? '#166534' : ($c==='blue' ? '#1E3A8A' : ($c==='red' ? '#991B1B' : '#92400E'));
-        $dot    = $c==='green' ? '#16A34A' : ($c==='blue' ? '#1D4ED8' : ($c==='red' ? '#C8192A' : '#D97706'));
+        $bg     = $c==='green' ? '#F0FDF4' : ($c==='blue' ? '#EFF6FF' : ($c==='red' ? '#F0FDFA' : '#FFFBEB'));
+        $border = $c==='green' ? '#BBF7D0' : ($c==='blue' ? '#BFDBFE' : ($c==='red' ? '#99F6E4' : '#FDE68A'));
+        $color  = $c==='green' ? '#166534' : ($c==='blue' ? '#1E3A8A' : ($c==='red' ? '#115E59' : '#92400E'));
+        $dot    = $c==='green' ? '#16A34A' : ($c==='blue' ? '#1D4ED8' : ($c==='red' ? '#0D9488' : '#D97706'));
       @endphp
       <div style="background:{{ $bg }};border:1px solid {{ $border }};border-radius:14px;padding:1.25rem;">
 
@@ -604,11 +862,11 @@
         <div class="donut-wrap">
           <svg width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0;">
             <circle cx="55" cy="55" r="38" fill="none" stroke="#F4F1F1" stroke-width="14"/>
-            <circle cx="55" cy="55" r="38" fill="none" stroke="#C8192A" stroke-width="14"
+            <circle cx="55" cy="55" r="38" fill="none" stroke="#1D4ED8" stroke-width="14"
               stroke-dasharray="{{ $elPct }} 239"
               stroke-dashoffset="0" stroke-linecap="butt"
               transform="rotate(-90 55 55)"/>
-            <circle cx="55" cy="55" r="38" fill="none" stroke="#FCA5A5" stroke-width="14"
+            <circle cx="55" cy="55" r="38" fill="none" stroke="#FDE68A" stroke-width="14"
               stroke-dasharray="{{ $notPct }} 239"
               stroke-dashoffset="-{{ $elPct }}" stroke-linecap="butt"
               transform="rotate(-90 55 55)"/>
@@ -616,8 +874,8 @@
             <text x="55" y="62" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#6B3B40">eligible</text>
           </svg>
           <div class="donut-legend">
-            <div class="dl-row"><span class="dl-dot" style="background:#C8192A"></span><span class="dl-label">Eligible</span><span class="dl-val">{{ $stats['eligible_donors'] }}</span></div>
-            <div class="dl-row"><span class="dl-dot" style="background:#FCA5A5"></span><span class="dl-label">Not eligible</span><span class="dl-val">{{ $stats['not_eligible'] }}</span></div>
+            <div class="dl-row"><span class="dl-dot" style="background:#1D4ED8"></span><span class="dl-label">Eligible</span><span class="dl-val">{{ $stats['eligible_donors'] }}</span></div>
+            <div class="dl-row"><span class="dl-dot" style="background:#FDE68A"></span><span class="dl-label">Not eligible</span><span class="dl-val">{{ $stats['not_eligible'] }}</span></div>
             <div class="dl-row"><span class="dl-dot" style="background:#E4DEDE"></span><span class="dl-label">Total</span><span class="dl-val">{{ $stats['total_donors'] }}</span></div>
           </div>
         </div>
@@ -672,7 +930,7 @@
                   </td>
                   <td>
                     <a href="{{ route('admin.donors.show', $donor->id) }}"
-                       style="font-size:0.75rem;color:var(--red);text-decoration:none;">
+                       style="font-size:0.75rem;color:var(--primary);text-decoration:none;">
                       View →
                     </a>
                   </td>
@@ -742,3 +1000,16 @@
 
 {{-- Donor dashboard, Admin dashboard, Hospital dashboard --}}
 @include('components.chatbot')
+
+<script>
+function toggleNotifDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('notifDropdown').classList.toggle('open');
+}
+document.addEventListener('click', function (e) {
+  var dd = document.getElementById('notifDropdown');
+  if (dd && !dd.contains(e.target) && !e.target.closest('.notif')) {
+    dd.classList.remove('open');
+  }
+});
+</script>

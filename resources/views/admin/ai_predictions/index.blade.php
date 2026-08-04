@@ -2,18 +2,21 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;--primary-mid:#60A5FA;
+    --secondary:#0D9488;--secondary-dark:#115E59;--secondary-light:#F0FDFA;--secondary-b:#99F6E4;
+    --accent:#06B6D4;--accent-light:#ECFEFF;--accent-b:#A5F3FC;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
     --amber:#D97706;--amber-bg:#FFFBEB;
+    --warning:#D97706;--warning-dark:#92400E;--warning-light:#FFFBEB;--warning-b:#FDE68A;
     --sb:68px;
   }
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
 
   /* SIDEBAR */
-  .sidebar{width:var(--sb);background:var(--red-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+  .sidebar{width:var(--sb);background:var(--primary-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
   .sb-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;}
   .sb-logo svg{width:18px;height:18px;fill:white;}
   .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;width:100%;align-items:center;}
@@ -36,7 +39,7 @@
   .topbar-label{font-size:0.7rem;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;}
   .topbar-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.1;}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;}
@@ -49,25 +52,25 @@
   /* FILTER BAR */
   .filter-bar{background:white;border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .filter-select{padding:0.5rem 2rem 0.5rem 0.9rem;border:1px solid var(--gray-b);border-radius:8px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--text);outline:none;cursor:pointer;}
-  .btn-filter{padding:0.5rem 1.1rem;border:none;border-radius:8px;background:var(--red);color:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;}
+  .btn-filter{padding:0.5rem 1.1rem;border:none;border-radius:8px;background:var(--primary);color:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;}
   .btn-reset{padding:0.5rem 1rem;border:1px solid var(--gray-b);border-radius:8px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;text-decoration:none;}
-  .btn-reset:hover{border-color:var(--red);color:var(--red);}
+  .btn-reset:hover{border-color:var(--primary);color:var(--primary);}
 
   /* TABLE */
   .table-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
   .table-wrap{overflow-x:auto;}
   table{width:100%;border-collapse:collapse;font-size:0.825rem;}
   thead th{padding:0.65rem 1rem;text-align:left;font-size:0.7rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);background:var(--gray);white-space:nowrap;}
-  tbody tr{border-bottom:1px solid rgba(200,25,42,0.06);}
+  tbody tr{border-bottom:1px solid rgba(29,78,216,0.06);}
   tbody tr:last-child{border-bottom:none;}
-  tbody tr:hover{background:var(--red-light);}
+  tbody tr:hover{background:var(--primary-light);}
   td{padding:0.75rem 1rem;color:var(--text);vertical-align:middle;}
   .badge{display:inline-block;font-size:0.68rem;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;}
   .b-elig{background:var(--blue-bg);color:var(--blue);}
   .b-resp{background:var(--amber-bg);color:var(--amber);}
-  .b-anom{background:var(--red-light);color:var(--red-dark);}
+  .b-anom{background:var(--warning-light);color:var(--warning-dark);}
   .b-other{background:var(--gray);color:var(--muted);}
-  .donor-link{color:var(--red-dark);text-decoration:none;font-weight:500;}
+  .donor-link{color:var(--primary-dark);text-decoration:none;font-weight:500;}
   .donor-link:hover{text-decoration:underline;}
 
   /* PAGINATION */
@@ -75,8 +78,8 @@
   .page-info{font-size:0.78rem;color:var(--muted);}
   .page-links{display:flex;gap:4px;}
   .page-links a,.page-links span{padding:0.35rem 0.75rem;border-radius:6px;font-size:0.78rem;text-decoration:none;border:1px solid var(--gray-b);color:var(--muted);background:white;}
-  .page-links a:hover{border-color:var(--red);color:var(--red);}
-  .page-links .active{background:var(--red);color:white;border-color:var(--red);}
+  .page-links a:hover{border-color:var(--primary);color:var(--primary);}
+  .page-links .active{background:var(--primary);color:white;border-color:var(--primary);}
 
   .empty-state{text-align:center;padding:3rem;color:var(--muted);}
 </style>
@@ -102,6 +105,14 @@
     <a href="{{ route('admin.ai-predictions.index') }}" class="sb-item active">
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
       <span class="sb-tooltip">AI Predictions</span>
+    </a>
+    <a href="{{ route('admin.inventory.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+      <span class="sb-tooltip">Blood Inventory</span>
+    </a>
+    <a href="{{ route('admin.appointments.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tooltip">Appointments</span>
     </a>
     <a href="{{ route('admin.profile.edit') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>

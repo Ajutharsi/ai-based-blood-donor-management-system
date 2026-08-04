@@ -7,9 +7,9 @@
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:2rem 0;">
     <tr>
       <td align="center">
-        <table width="480" cellpadding="0" cellspacing="0" style="background:white; border-radius:14px; overflow:hidden; border:1px solid rgba(200,25,42,0.12);">
+        <table width="480" cellpadding="0" cellspacing="0" style="background:white; border-radius:14px; overflow:hidden; border:1px solid rgba(29,78,216,0.12);">
           <tr>
-            <td style="background:#8B0F1C; padding:1.5rem 2rem;">
+            <td style="background:#1E3A8A; padding:1.5rem 2rem;">
               <span style="color:white; font-size:1.3rem; font-weight:700;">LifeLink</span>
             </td>
           </tr>
@@ -21,7 +21,7 @@
                 <strong>{{ $hospital->name }}</strong> has an active blood request that matches your profile:
               </p>
 
-              <table width="100%" cellpadding="8" cellspacing="0" style="background:#F9E8EA; border-radius:8px; font-size:0.9rem; color:#8B0F1C; margin-bottom:1.25rem;">
+              <table width="100%" cellpadding="8" cellspacing="0" style="background:#EFF6FF; border-radius:8px; font-size:0.9rem; color:#1E3A8A; margin-bottom:1.25rem;">
                 <tr>
                   <td><strong>Blood Group</strong></td>
                   <td>{{ $bloodRequest->blood_group }}</td>
@@ -47,7 +47,7 @@
 
               <table cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="background:#C8192A; border-radius:8px;">
+                  <td style="background:#1D4ED8; border-radius:8px;">
                     <a href="{{ route('donor.requests.index') }}"
                        style="display:inline-block; padding:0.75rem 1.5rem; color:white; text-decoration:none; font-size:0.9rem; font-weight:500;">
                       View & Respond to This Request

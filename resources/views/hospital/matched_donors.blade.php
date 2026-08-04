@@ -2,12 +2,14 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
-    --amber:#D97706;--amber-bg:#FFFBEB;--amber-b:#FDE68A;
+    --amber:#D97706;--amber-dark:#92400E;--amber-bg:#FFFBEB;--amber-b:#FDE68A;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
+    --secondary:#0D9488;--secondary-dark:#115E59;
+    --accent:#06B6D4;--accent-light:#ECFEFF;--accent-dark:#0E7490;
     --sb:66px;
   }
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
@@ -34,7 +36,7 @@
   .topbar{background:white;border-bottom:1px solid var(--border);padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
   .tb-left{display:flex;align-items:center;gap:12px;}
   .back-btn{display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted);text-decoration:none;padding:0.4rem 0.9rem;border:1px solid var(--gray-b);border-radius:7px;transition:all 0.2s;}
-  .back-btn:hover{border-color:var(--red);color:var(--red);}
+  .back-btn:hover{border-color:var(--primary);color:var(--primary);}
   .back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
   .tb-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text);}
   .tb-right{display:flex;align-items:center;gap:10px;}
@@ -43,7 +45,7 @@
   .hosp-av svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:2;}
   .hosp-name{font-size:0.78rem;font-weight:500;color:var(--blue);}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;}
@@ -52,7 +54,7 @@
   .req-banner{border-radius:16px;padding:1.5rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;position:relative;overflow:hidden;}
   .rb-urgent{background:#0F172A;}
   .rb-standard{background:#0F172A;}
-  .rb-critical{background:#7F1D1D;}
+  .rb-critical{background:#92400E;}
   .rb-bg{position:absolute;inset:0;pointer-events:none;}
   .rbc{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,0.06);}
   .rbc1{width:300px;height:300px;top:-100px;right:-60px;}
@@ -80,7 +82,7 @@
 
   /* AI HEADER */
   .ai-header{display:flex;align-items:center;gap:10px;padding:1rem 1.25rem;background:var(--off);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;margin:-1.25rem -1.5rem 1.25rem;}
-  .ai-icon{width:32px;height:32px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ai-icon{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .ai-icon svg{width:16px;height:16px;stroke:white;fill:none;stroke-width:2;}
   .ai-hd-t{font-size:0.875rem;font-weight:500;color:var(--text);}
   .ai-hd-s{font-size:0.72rem;color:var(--muted);}
@@ -89,19 +91,19 @@
   /* DONOR MATCH CARDS */
   .match-list{display:flex;flex-direction:column;gap:10px;}
   .match-card{border:1px solid var(--border);border-radius:11px;padding:1rem 1.1rem;transition:all 0.2s;position:relative;}
-  .match-card:hover{border-color:rgba(200,25,42,0.3);background:var(--red-light);}
-  .match-card.top{border-color:var(--red);background:var(--red-light);}
-  .top-badge{position:absolute;top:-1px;right:12px;font-size:0.6rem;font-weight:500;background:var(--red);color:white;padding:2px 9px;border-radius:0 0 6px 6px;letter-spacing:0.05em;text-transform:uppercase;}
+  .match-card:hover{border-color:rgba(29,78,216,0.3);background:var(--primary-light);}
+  .match-card.top{border-color:var(--primary);background:var(--primary-light);}
+  .top-badge{position:absolute;top:-1px;right:12px;font-size:0.6rem;font-weight:500;background:var(--primary);color:white;padding:2px 9px;border-radius:0 0 6px 6px;letter-spacing:0.05em;text-transform:uppercase;}
   .mc-row1{display:flex;align-items:center;gap:10px;margin-bottom:0.65rem;}
-  .mc-av{width:36px;height:36px;border-radius:50%;background:var(--red-light);color:var(--red-dark);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:500;flex-shrink:0;}
+  .mc-av{width:36px;height:36px;border-radius:50%;background:var(--primary-light);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:500;flex-shrink:0;}
   .mc-info{flex:1;}
   .mc-name{font-size:0.875rem;font-weight:500;color:var(--text);}
   .mc-meta{font-size:0.7rem;color:var(--muted);}
-  .mc-blood{display:inline-block;background:var(--red-light);color:var(--red-dark);font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:5px;}
+  .mc-blood{display:inline-block;background:var(--primary-light);color:var(--primary-dark);font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:5px;}
   .mc-score-wrap{display:flex;align-items:center;gap:6px;margin-bottom:0.5rem;}
   .mc-score-label{font-size:0.68rem;color:var(--muted);min-width:55px;}
-  .mc-score-bar{flex:1;background:#F0E8E9;border-radius:3px;height:5px;overflow:hidden;}
-  .mc-score-fill{height:5px;border-radius:3px;background:var(--red);}
+  .mc-score-bar{flex:1;background:var(--gray-b);border-radius:3px;height:5px;overflow:hidden;}
+  .mc-score-fill{height:5px;border-radius:3px;background:var(--accent);}
   .mc-score-val{font-size:0.72rem;font-weight:500;color:var(--text);min-width:30px;text-align:right;}
   .mc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:0.65rem;}
   .mc-tag{font-size:0.65rem;padding:2px 7px;border-radius:4px;}
@@ -111,9 +113,9 @@
   .mc-actions{display:flex;gap:7px;}
   .mc-btn{flex:1;padding:0.45rem;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:400;cursor:pointer;transition:all 0.18s;border:1px solid var(--gray-b);background:white;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:5px;text-decoration:none;}
   .mc-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
-  .mc-btn:hover{border-color:var(--red);color:var(--red);}
-  .mc-btn.primary{background:var(--red);color:white;border-color:var(--red);}
-  .mc-btn.primary:hover{background:var(--red-dark);}
+  .mc-btn:hover{border-color:var(--primary);color:var(--primary);}
+  .mc-btn.primary{background:var(--primary);color:white;border-color:var(--primary);}
+  .mc-btn.primary:hover{background:var(--primary-dark);}
 
   /* EMPTY */
   .empty-state{text-align:center;padding:3rem 1.5rem;}
@@ -126,18 +128,18 @@
 
   /* REQUEST DETAIL */
   .req-detail-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-  .rd-top{background:var(--red-dark);padding:1.25rem;text-align:center;}
+  .rd-top{background:var(--primary-dark);padding:1.25rem;text-align:center;}
   .rd-blood{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:white;line-height:1;}
   .rd-blood-label{font-size:0.72rem;color:rgba(255,255,255,0.55);letter-spacing:0.06em;text-transform:uppercase;margin-top:4px;}
   .rd-body{padding:1rem 1.25rem;}
-  .rd-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .rd-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .rd-row:last-child{border-bottom:none;}
   .rd-key{font-size:0.75rem;color:var(--muted);}
   .rd-val{font-size:0.8rem;font-weight:500;color:var(--text);}
   .badge{display:inline-block;font-size:0.68rem;font-weight:500;padding:3px 9px;border-radius:20px;}
   .b-std{background:var(--gray);color:var(--muted);}
   .b-urg{background:var(--amber-bg);color:var(--amber);}
-  .b-crit{background:var(--red-light);color:var(--red-dark);}
+  .b-crit{background:var(--amber-b);color:var(--amber-dark);}
   .b-pen{background:var(--blue-bg);color:var(--blue);}
 
   /* FULFILL BUTTON */
@@ -145,11 +147,11 @@
   .fulfill-btn:hover{background:#15803D;}
   .fulfill-btn svg{width:15px;height:15px;stroke:white;fill:none;stroke-width:2;}
   .new-req-btn{width:100%;padding:0.65rem;border:1px solid var(--border);border-radius:8px;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;}
-  .new-req-btn:hover{border-color:var(--red);color:var(--red);}
+  .new-req-btn:hover{border-color:var(--primary);color:var(--primary);}
   .new-req-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
 
   /* TIPS CARD */
-  .tip-item{display:flex;gap:10px;padding:0.65rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .tip-item{display:flex;gap:10px;padding:0.65rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .tip-item:last-child{border-bottom:none;}
   .tip-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
   .tip-text{font-size:0.78rem;color:var(--muted);line-height:1.55;}
@@ -172,6 +174,14 @@
     <a href="{{ route('hospital.requests.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       <span class="sb-tip">All Requests</span>
+    </a>
+    <a href="{{ route('hospital.appointments.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tip">Appointments</span>
+    </a>
+    <a href="{{ route('hospital.inventory.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+      <span class="sb-tip">Blood Inventory</span>
     </a>
     <a href="{{ route('hospital.profile.edit') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -253,6 +263,20 @@
           <span class="ai-status">{{ $matchCount }} eligible found</span>
         </div>
 
+        @if($matched_donors->isNotEmpty())
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+            <span style="font-size:0.72rem;color:var(--muted);">Sort by:</span>
+            @php $sortLinks = ['match_score' => 'Match Score', 'distance' => 'Distance', 'confidence' => 'AI Confidence']; @endphp
+            @foreach($sortLinks as $key => $label)
+              <a href="{{ route('hospital.requests.show', $bloodRequest->id) }}?sort={{ $key }}"
+                 style="font-size:0.75rem;padding:0.3rem 0.8rem;border-radius:20px;text-decoration:none;border:1px solid var(--gray-b,var(--border));
+                        {{ ($sort ?? 'match_score') === $key ? 'background:var(--primary-light);color:var(--primary-dark);font-weight:600;border-color:var(--border);' : 'color:var(--muted);' }}">
+                {{ $label }}
+              </a>
+            @endforeach
+          </div>
+        @endif
+
         @if($matched_donors->isEmpty())
           <div class="empty-state">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -290,11 +314,11 @@
 
                 {{-- MATCH SCORE BAR (primary ranking signal) --}}
                 <div class="mc-score-wrap">
-                  <span class="mc-score-label" style="font-weight:600;color:var(--red-dark);">Match</span>
+                  <span class="mc-score-label" style="font-weight:600;color:var(--accent-dark);">Match</span>
                   <div class="mc-score-bar">
-                    <div class="mc-score-fill" style="width:{{ $matchScore }}%;background:var(--red-dark);"></div>
+                    <div class="mc-score-fill" style="width:{{ $matchScore }}%;background:var(--accent-dark);"></div>
                   </div>
-                  <span class="mc-score-val" style="color:var(--red-dark);font-weight:600;">{{ number_format($matchScore,1) }}%</span>
+                  <span class="mc-score-val" style="color:var(--accent-dark);font-weight:600;">{{ number_format($matchScore,1) }}%</span>
                 </div>
 
                 {{-- AI SCORE BAR --}}
@@ -311,7 +335,7 @@
   @php
     $respColor = $donor->response_level === 'high'
       ? 'var(--green)'
-      : ($donor->response_level === 'medium' ? 'var(--amber)' : 'var(--red)');
+      : ($donor->response_level === 'medium' ? 'var(--amber)' : 'var(--amber-dark)');
   @endphp
   <div class="mc-score-wrap">
     <span class="mc-score-label" style="color:{{ $respColor }}">Response</span>
@@ -344,6 +368,11 @@
                     <span class="mc-tag tag-g">Same district</span>
                   @elseif($donor->district)
                     <span class="mc-tag tag-gray">{{ $donor->district }}</span>
+                  @endif
+                  @if($donor->distance_km !== null)
+                    <span class="mc-tag tag-b">{{ number_format($donor->distance_km, 1) }} km · {{ $donor->travel_category }}</span>
+                  @else
+                    <span class="mc-tag tag-gray">Distance unknown</span>
                   @endif
                   @if($donor->hemoglobin)
                     <span class="mc-tag tag-b">Hemo {{ number_format($donor->hemoglobin,1) }}</span>
@@ -452,7 +481,7 @@
             <div class="card-t">How to Contact Donors</div>
           </div>
           <div class="tip-item">
-            <div class="tip-dot" style="background:var(--red);"></div>
+            <div class="tip-dot" style="background:var(--secondary);"></div>
             <div class="tip-text">Click <strong>Notify</strong> to email the donor about your blood request, with a link for them to confirm their availability.</div>
           </div>
           <div class="tip-item">

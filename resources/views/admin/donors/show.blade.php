@@ -2,9 +2,9 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --red:#C8192A;--red-dark:#8B0F1C;--red-light:#F9E8EA;
-    --white:#fff;--off:#F7F3F3;--text:#1A0A0B;--muted:#6B3B40;
-    --border:rgba(200,25,42,0.12);--gray:#F4F1F1;--gray-b:#E4DEDE;
+    --primary:#1D4ED8;--primary-dark:#1E3A8A;--primary-light:#EFF6FF;
+    --white:#fff;--off:#F8FAFC;--text:#1E293B;--muted:#64748B;
+    --border:rgba(29,78,216,0.12);--gray:#F1F5F9;--gray-b:#E2E8F0;
     --green:#16A34A;--green-bg:#F0FDF4;--green-b:#BBF7D0;
     --amber:#D97706;--amber-bg:#FFFBEB;--amber-b:#FDE68A;
     --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;
@@ -13,7 +13,7 @@
   body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);display:flex;min-height:100vh;}
 
   /* SIDEBAR */
-  .sidebar{width:var(--sb);background:var(--red-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+  .sidebar{width:var(--sb);background:var(--primary-dark);display:flex;flex-direction:column;align-items:center;padding:1.25rem 0;position:fixed;top:0;left:0;height:100vh;z-index:50;}
   .sb-logo{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;}
   .sb-logo svg{width:18px;height:18px;fill:white;}
   .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;width:100%;align-items:center;}
@@ -22,7 +22,7 @@
   .sb-item:hover svg{stroke:rgba(255,255,255,0.8);}
   .sb-item.active{background:rgba(255,255,255,0.15);}
   .sb-item.active svg{stroke:white;}
-  .sb-tooltip{position:absolute;left:56px;background:#1A0A0B;color:white;font-size:0.72rem;padding:4px 10px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:99;}
+  .sb-tooltip{position:absolute;left:56px;background:#1E293B;color:white;font-size:0.72rem;padding:4px 10px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:99;}
   .sb-item:hover .sb-tooltip{opacity:1;}
   .sb-bottom{margin-top:auto;padding-bottom:0.5rem;}
   .sb-avatar{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:500;color:white;}
@@ -34,15 +34,15 @@
   .topbar{background:white;border-bottom:1px solid var(--border);padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
   .topbar-left{display:flex;align-items:center;gap:12px;}
   .back-btn{display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted);text-decoration:none;padding:0.4rem 0.9rem;border:1px solid var(--gray-b);border-radius:7px;transition:all 0.2s;}
-  .back-btn:hover{border-color:var(--red);color:var(--red);}
+  .back-btn:hover{border-color:var(--primary);color:var(--primary);}
   .back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
   .topbar-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text);}
   .topbar-right{display:flex;align-items:center;gap:10px;}
-  .admin-pill{display:flex;align-items:center;gap:8px;background:var(--red-light);border:1px solid var(--border);border-radius:20px;padding:0.35rem 0.9rem 0.35rem 0.5rem;}
-  .admin-avatar{width:24px;height:24px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;color:white;}
-  .admin-name{font-size:0.78rem;font-weight:500;color:var(--red-dark);}
+  .admin-pill{display:flex;align-items:center;gap:8px;background:var(--primary-light);border:1px solid var(--border);border-radius:20px;padding:0.35rem 0.9rem 0.35rem 0.5rem;}
+  .admin-avatar{width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;color:white;}
+  .admin-name{font-size:0.78rem;font-weight:500;color:var(--primary-dark);}
   .logout-btn{padding:0.4rem 1rem;border:1px solid var(--gray-b);border-radius:7px;background:white;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
+  .logout-btn:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CONTENT */
   .content{padding:1.75rem 2rem;}
@@ -55,7 +55,7 @@
 
   /* PROFILE CARD */
   .profile-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-  .pc-top{background:var(--red-dark);padding:2rem 1.5rem;text-align:center;position:relative;}
+  .pc-top{background:var(--primary-dark);padding:2rem 1.5rem;text-align:center;position:relative;}
   .pc-bg{position:absolute;inset:0;pointer-events:none;}
   .pc-circle{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,0.08);}
   .pcc1{width:180px;height:180px;top:-50px;right:-40px;}
@@ -63,9 +63,9 @@
   .pc-avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;margin:0 auto 0.85rem;position:relative;z-index:2;}
   .pc-name{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:white;position:relative;z-index:2;margin-bottom:4px;}
   .pc-email{font-size:0.75rem;color:rgba(255,255,255,0.55);position:relative;z-index:2;margin-bottom:10px;}
-  .pc-blood{display:inline-block;background:var(--red);color:white;font-size:0.78rem;font-weight:600;padding:4px 14px;border-radius:20px;position:relative;z-index:2;}
+  .pc-blood{display:inline-block;background:var(--primary);color:white;font-size:0.78rem;font-weight:600;padding:4px 14px;border-radius:20px;position:relative;z-index:2;}
   .pc-body{padding:1.1rem 1.25rem;}
-  .pc-row{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0;border-bottom:1px solid rgba(200,25,42,0.06);}
+  .pc-row{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0;border-bottom:1px solid rgba(29,78,216,0.06);}
   .pc-row:last-child{border-bottom:none;}
   .pc-key{font-size:0.75rem;color:var(--muted);}
   .pc-val{font-size:0.8rem;font-weight:500;color:var(--text);text-align:right;}
@@ -76,12 +76,12 @@
   .action-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
   .ab-toggle-on{background:var(--green-bg);color:var(--green);border:1px solid var(--green-b);}
   .ab-toggle-on:hover{background:var(--green);color:white;}
-  .ab-toggle-off{background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA;}
-  .ab-toggle-off:hover{background:#C2410C;color:white;}
-  .ab-delete{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;}
-  .ab-delete:hover{background:#991B1B;color:white;}
+  .ab-toggle-off{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;}
+  .ab-toggle-off:hover{background:#92400E;color:white;}
+  .ab-delete{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;}
+  .ab-delete:hover{background:#92400E;color:white;}
   .ab-back{background:var(--gray);color:var(--muted);border:1px solid var(--gray-b);}
-  .ab-back:hover{border-color:var(--red);color:var(--red);}
+  .ab-back:hover{border-color:var(--primary);color:var(--primary);}
 
   /* CARD */
   .card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:14px;}
@@ -104,15 +104,15 @@
   .am-bar{background:var(--gray);border-radius:4px;height:5px;overflow:hidden;}
   .am-fill{height:5px;border-radius:4px;}
   .fill-g{background:var(--green);}
-  .fill-r{background:var(--red);}
+  .fill-r{background:var(--amber);}
   .am-status{font-size:0.65rem;font-weight:500;margin-top:5px;}
   .st-ok{color:var(--green);}
-  .st-warn{color:var(--red);}
+  .st-warn{color:#92400E;}
 
   /* BADGE */
   .badge{display:inline-block;font-size:0.72rem;font-weight:500;padding:4px 10px;border-radius:20px;}
   .b-elig{background:var(--green-bg);color:var(--green);}
-  .b-not{background:#FFF7ED;color:#C2410C;}
+  .b-not{background:#FFFBEB;color:#92400E;}
 
   /* CONFIDENCE BAR */
   .conf-wrap{display:flex;align-items:center;gap:10px;margin-top:0.75rem;}
@@ -146,6 +146,14 @@
     <a href="{{ route('admin.ai-predictions.index') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
       <span class="sb-tooltip">AI Predictions</span>
+    </a>
+    <a href="{{ route('admin.inventory.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+      <span class="sb-tooltip">Blood Inventory</span>
+    </a>
+    <a href="{{ route('admin.appointments.index') }}" class="sb-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+      <span class="sb-tooltip">Appointments</span>
     </a>
     <a href="{{ route('admin.profile.edit') }}" class="sb-item">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -197,7 +205,7 @@
       $hemoBar   = $hemo   > 0 ? min(100, round(($hemo   / 18)  * 100)) : 0;
       $confColor = ($donor->ai_confidence ?? 0) >= 80
                     ? 'var(--green)'
-                    : (($donor->ai_confidence ?? 0) >= 50 ? 'var(--amber)' : 'var(--red)');
+                    : (($donor->ai_confidence ?? 0) >= 50 ? 'var(--amber)' : '#92400E');
     @endphp
 
     <div class="page-grid">
@@ -410,11 +418,11 @@
         </div>
 
         {{-- ANOMALY DETECTION --}}
-<div style="margin-top:1rem;padding:1rem 1.1rem;background:{{ $donor->is_anomaly ? '#FEF2F2' : 'var(--green-bg)' }};border:1px solid {{ $donor->is_anomaly ? '#FECACA' : 'var(--green-b)' }};border-radius:9px;">
+<div style="margin-top:1rem;padding:1rem 1.1rem;background:{{ $donor->is_anomaly ? '#FFFBEB' : 'var(--green-bg)' }};border:1px solid {{ $donor->is_anomaly ? '#FDE68A' : 'var(--green-b)' }};border-radius:9px;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
     <div style="display:flex;align-items:center;gap:7px;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-           stroke="{{ $donor->is_anomaly ? '#C8192A' : 'var(--green)' }}"
+           stroke="{{ $donor->is_anomaly ? '#92400E' : 'var(--green)' }}"
            stroke-width="2" stroke-linecap="round">
         @if($donor->is_anomaly)
           <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -425,15 +433,15 @@
           <polyline points="22 4 12 14.01 9 11.01"/>
         @endif
       </svg>
-      <span style="font-size:0.78rem;font-weight:500;color:{{ $donor->is_anomaly ? '#991B1B' : 'var(--green)' }};">
+      <span style="font-size:0.78rem;font-weight:500;color:{{ $donor->is_anomaly ? '#92400E' : 'var(--green)' }};">
         Anomaly Detection — {{ $donor->is_anomaly ? 'Suspicious Profile' : 'Normal Profile' }}
       </span>
     </div>
-    <span style="font-size:0.68rem;font-weight:500;padding:2px 8px;border-radius:20px;background:{{ $donor->is_anomaly ? '#FECACA' : 'var(--green-b)' }};color:{{ $donor->is_anomaly ? '#991B1B' : 'var(--green)' }};">
+    <span style="font-size:0.68rem;font-weight:500;padding:2px 8px;border-radius:20px;background:{{ $donor->is_anomaly ? '#FDE68A' : 'var(--green-b)' }};color:{{ $donor->is_anomaly ? '#92400E' : 'var(--green)' }};">
       Isolation Forest
     </span>
   </div>
-  <div style="font-size:0.75rem;color:{{ $donor->is_anomaly ? '#991B1B' : '#166534' }};line-height:1.5;">
+  <div style="font-size:0.75rem;color:{{ $donor->is_anomaly ? '#92400E' : '#166534' }};line-height:1.5;">
     @if($donor->is_anomaly)
       This donor's health data falls outside the normal range of registered donors.
       Admin review recommended. Anomaly score: {{ number_format($donor->anomaly_score, 2) }}
@@ -498,7 +506,7 @@
             </div>
             <button type="submit" class="action-btn ab-toggle-on" style="white-space:nowrap;">Record Donation</button>
           </form>
-          @error('donation_date')<span class="error-msg" style="color:var(--red);font-size:0.72rem;">{{ $message }}</span>@enderror
+          @error('donation_date')<span class="error-msg" style="color:#92400E;font-size:0.72rem;">{{ $message }}</span>@enderror
         </div>
 
       </div>

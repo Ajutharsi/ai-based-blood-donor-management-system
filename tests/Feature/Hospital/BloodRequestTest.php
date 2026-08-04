@@ -104,4 +104,37 @@ class BloodRequestTest extends TestCase
         $response->assertForbidden();
         $this->assertEquals('pending', $bloodRequest->fresh()->status);
     }
+
+    public function test_hospital_can_revisit_matched_donors_for_its_own_request(): void
+    {
+        $hospital = Hospital::factory()->create();
+        Donor::factory()->create(['blood_group' => 'O+', 'is_eligible' => true, 'ai_confidence' => 90]);
+        $bloodRequest = BloodRequest::create([
+            'hospital_id'  => $hospital->id,
+            'blood_group'  => 'O+',
+            'units_needed' => 2,
+        ]);
+
+        $response = $this->actingAs($hospital, 'hospital')
+            ->get(route('hospital.requests.show', $bloodRequest));
+
+        $response->assertOk();
+        $response->assertSee('O+');
+    }
+
+    public function test_hospital_cannot_view_matched_donors_for_another_hospitals_request(): void
+    {
+        $owner = Hospital::factory()->create();
+        $intruder = Hospital::factory()->create();
+        $bloodRequest = BloodRequest::create([
+            'hospital_id'  => $owner->id,
+            'blood_group'  => 'O+',
+            'units_needed' => 1,
+        ]);
+
+        $response = $this->actingAs($intruder, 'hospital')
+            ->get(route('hospital.requests.show', $bloodRequest));
+
+        $response->assertForbidden();
+    }
 }

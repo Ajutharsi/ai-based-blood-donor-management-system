@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BloodRequest extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'hospital_id', 'blood_group', 'units_needed',
         'urgency', 'ward', 'required_by',
@@ -25,5 +28,10 @@ class BloodRequest extends Model
     public function responses()
     {
         return $this->hasMany(DonorResponse::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 }

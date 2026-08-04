@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Donor\RegisterDonorRequest;
 use App\Models\AiPrediction;
 use App\Models\Donor;
+use App\Models\Notification;
 use App\Services\AiEligibilityService;
 use Illuminate\Support\Facades\Hash;
 
@@ -96,6 +97,15 @@ class RegisterController extends Controller
         AiPrediction::log($donor->id, 'eligibility', $eligibilityInput, $result);
         AiPrediction::log($donor->id, 'response', $responseInput, $responseResult);
         AiPrediction::log($donor->id, 'anomaly', $anomalyInput, $anomalyResult);
+
+        if ($anomalyResult['is_anomaly'] ?? false) {
+            Notification::notifyAllAdmins(
+                'AI anomaly alert',
+                "AI flagged new donor {$donor->full_name} ({$donor->blood_group}) as a possible anomaly (score {$anomalyResult['anomaly_score']}%).",
+                'ai_alert',
+                $donor->id
+            );
+        }
 
         auth('donor')->login($donor);
 

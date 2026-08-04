@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Hospital;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hospital\RegisterHospitalRequest;
 use App\Models\Hospital;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
@@ -28,6 +29,13 @@ class RegisterController extends Controller
             'district'        => $request->district,
             'address'         => $request->address,
         ]);
+
+        Notification::notifyAllAdmins(
+            'New hospital registration',
+            "{$hospital->name} registered from {$hospital->district} and is pending verification.",
+            'hospital_registration',
+            $hospital->id
+        );
 
         auth('hospital')->login($hospital);
 

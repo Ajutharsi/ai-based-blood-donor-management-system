@@ -12,6 +12,16 @@ class DashboardController extends Controller
         $donor = auth('donor')->user();
         $modelMetrics = (new AiEligibilityService())->getModelInfo();
 
-        return view('donor.donor_dashboard', compact('donor', 'modelMetrics'));
+        $notifications = $donor->notifications()->take(8)->get();
+        $unreadNotifications = $donor->unreadNotificationsCount();
+
+        $appointments = $donor->appointments()->with(['bloodRequest', 'hospital'])->get();
+        $upcomingAppointment = $appointments->whereIn('status', ['pending', 'approved'])->sortBy('appointment_date')->first();
+        $appointmentHistory = $appointments->whereIn('status', ['completed', 'rejected', 'cancelled'])->sortByDesc('appointment_date')->take(5)->values();
+
+        return view('donor.donor_dashboard', compact(
+            'donor', 'modelMetrics', 'notifications', 'unreadNotifications',
+            'upcomingAppointment', 'appointmentHistory'
+        ));
     }
 }

@@ -15,17 +15,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
+        // Order matters: hospitals/donors must exist before blood requests,
+        // which must exist before donor responses; donations only need
+        // donors; AI predictions read from both donors and (for
+        // shortage/forecast) the already-seeded blood requests.
         $this->call([
             AdminSeeder::class,
             HospitalSeeder::class,
             DonorSeeder::class,
+            BloodRequestSeeder::class,
+            DonorResponseSeeder::class,
+            DonationSeeder::class,
+            AiPredictionSeeder::class,
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Donor;
 use App\Http\Controllers\Controller;
 use App\Models\BloodRequest;
 use App\Models\DonorResponse;
+use App\Models\Notification;
 use App\Support\BloodCompatibility;
 use Illuminate\Http\Request;
 
@@ -68,6 +69,16 @@ class BloodRequestController extends Controller
         DonorResponse::updateOrCreate(
             ['donor_id' => $donor->id, 'blood_request_id' => $bloodRequest->id],
             ['status' => $request->status, 'responded_at' => now()]
+        );
+
+        $responseLabel = $request->status === 'available' ? 'available' : 'not available';
+        Notification::notify(
+            'hospital',
+            $bloodRequest->hospital_id,
+            'Donor response',
+            "{$donor->full_name} responded '{$responseLabel}' to your {$bloodRequest->blood_group} request.",
+            'donor_response',
+            $bloodRequest->id
         );
 
         $message = $request->status === 'available'
